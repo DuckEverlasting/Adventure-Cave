@@ -1,8 +1,9 @@
 class Item:
-    def __init__(self, name, longName, desc):
+    def __init__(self, name, long_name, desc, obtainable=True):
         self.name = name
-        self.longName = longName
+        self.long_name = long_name
         self.desc = desc
+        self.obtainable = obtainable
 
     def __str__(self):
         return self.name
