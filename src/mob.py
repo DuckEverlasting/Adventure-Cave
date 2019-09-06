@@ -25,7 +25,6 @@ class Mob:
     #         return False
     
     def moveRand(self):
-        possibleMoves = []
         directions = {
             "n_to": dir_text("north"),
             "s_to": dir_text("south"),
@@ -33,15 +32,11 @@ class Mob:
             "w_to": dir_text("west")
         }
 
-        if random.randint(0, 3) != 0:
+        if random.randint(0, 2) != 0:
             return False
         else:
-            for i in (directions.keys()):
-                if hasattr(self.loc, i):
-                    possibleMoves.append(i)
-            
+            possibleMoves = [i for i in (directions.keys()) if hasattr(self.loc, i)]
             dir_to = random.choice(possibleMoves)
-
             dest = getattr(self.loc, dir_to)
             self.prev_loc = self.loc
             self.loc = dest[0]

@@ -2,6 +2,9 @@ from colorama import Fore, Back, Style
 
 
 # Set up wrappers for coloring text
+def title_text(string):
+    return f"{Fore.YELLOW}{Back.BLUE}{string}{Style.RESET_ALL}"
+
 def error_text(string):
     return f"{Fore.RED}{Style.BRIGHT}{string}{Style.RESET_ALL}"
 

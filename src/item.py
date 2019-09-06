@@ -1,9 +1,9 @@
 class Item:
-    def __init__(self, name, long_name, desc, obtainable=True):
-        self.name = name
-        self.long_name = long_name
-        self.desc = desc
-        self.obtainable = obtainable
+    def __init__(self, data):
+        self.name = data["name"]
+        self.long_name = data["long_name"]
+        self.desc = data["desc"]
+        self.obtainable = data["obtainable"]
 
     def __str__(self):
         return self.name

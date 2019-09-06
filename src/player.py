@@ -10,8 +10,10 @@ class Player:
         if hasattr(self.loc, f"{dir}_to"):
             dest = getattr(self.loc, f"{dir}_to")
             self.loc = dest[0]
-            return dest[1] + "\n"
+            print(f"{dest[1]}\n")
+            return True
         else:
+            print(error_text("ERROR: MOVEMENT NOT ALLOWED\n"))
             return False
 
     def look_item(self, item):
@@ -34,12 +36,20 @@ class Player:
         if item in self.items:
             if hasattr(item, "use"):
                 item.use()
+                return True
             else:
                 print("You can't use that.\n")
+                return False
         elif item in self.loc.items:
-            if item.obtainable:
+            if hasattr(item, "use_from_env"):
+                item.use_from_env()
+                return True
+            elif item.obtainable:
                 print("Try picking it up first.\n")
+                return False
             else:
                 print("You can't use that.\n")
+                return False
         else:
             print("There is no such item here.\n")
+            return False
