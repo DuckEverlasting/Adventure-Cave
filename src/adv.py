@@ -14,7 +14,7 @@ from text_style import (
     dir_text,
     dir_in_desc_text,
 )
-from logic import parse_list
+from logic import parse_list, single_word_replace, multi_word_replace
 
 # Clear terminal
 os.system("cls" if os.name == "nt" else "clear")
@@ -88,7 +88,7 @@ while game_on:
     print(spacers)
     print(f"{player.loc.desc}\n")
 
-    mobs_here = [i for i in mob if mob[i].alive and mob[i].loc == player.loc]
+    mobs_here = [mob[i] for i in mob if mob[i].alive and mob[i].loc == player.loc]
 
     if len(player.loc.items) > 0:
         print(f"You see {parse_list(player.loc.items)} here.")
@@ -103,33 +103,40 @@ while game_on:
     player_moved = False
 
     # Player's turn
-    command = input("> ").lower().split()
+    command = input("> ").lower()
+    
+    # Check input for any phrases to be simplified
+    for i in multi_word_replace:
+        if i in command:
+            command = command.replace(i, multi_word_replace[i])
+
+    # Split input into words
+    command = command.split()
+
+    # Check input for any words to replace with recognized commands
+    for i in range(len(command)):
+        if command[i] in single_word_replace:
+            command[i] = single_word_replace[command[i]]
 
     # Resolve player action
     print()
 
     if len(command) > 2:
-        print(error_text("ERROR: USE TWO WORDS OR LESS\n"))
+        print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))
 
-    elif command[0] in ("h", "help"):
+    elif command[0] == "help":
         print("==============\nBasic Controls\n==============")
         print(
-            f"Move around: \"{item_text('n')}orth\", \"{item_text('s')}outh\", \"{item_text('e')}ast\", \"{item_text('w')}est\", \"{item_text('d')}own\", \"{item_text('u')}p\""
+            f"Move around: \"{item_text('n')}orth\", \"{item_text('s')}outh\", \"{item_text('e')}ast\", \"{item_text('w')}est\", \"down\", \"up\""
         )
         print(
-            f"Interact with things: \"{item_text('l')}ook\", \"get\", \"drop\", \"use\""
+            f"Interact with things: \"{item_text('l')}ook\", \"{item_text('g')}et\", \"{item_text('d')}rop\", \"{item_text('u')}se\""
         )
         print(f"Check inventory: \"{item_text('i')}nv\"")
         print(f"Exit game: \"{item_text('q')}uit\"")
         print()
 
     elif command[0] in (
-        "n",
-        "s",
-        "e",
-        "w",
-        "d",
-        "u",
         "north",
         "south",
         "east",
@@ -143,13 +150,13 @@ while game_on:
             time_passed = True
             player_moved = True
 
-    elif command[0] in ("i", "inv", "inventory") and len(command) == 1:
+    elif command[0] == "inventory" and len(command) == 1:
         if len(player.items) > 0:
             print(f"You have {parse_list(player.items)} in your inventory.\n")
         else:
             print("You have no items in your inventory.\n")
 
-    elif command[0] in ("l", "look"):
+    elif command[0] == "look":
         if len(command) == 1:
             print("What would you like to look at?\n")
         elif command[1] in item:
@@ -168,7 +175,7 @@ while game_on:
         else:
             print(error_text("ERROR: NOTHING HERE BY THAT NAME\n"))
 
-    elif command[0] in ("get", "take"):
+    elif command[0] == "get":
         if len(command) == 1:
             print(f"What would you like to {command[0]}?\n")
         elif command[1] in item:
@@ -205,16 +212,20 @@ while game_on:
             player.use_item(item[command[1]])
             time_passed = True
 
-    elif command[0] == "swing" and command[1] == "sword":
+    elif command[0] == "wield" and command[1] == "sword":
         if len(command) == 1:
             print(f"What would you like to {command[0]}?\n")
         else:
             player.use_item(item[command[1]])
             time_passed = True
 
-    elif command[0] in ("q", "quit"):
-        print("Exiting game...\n")
-        game_on = False
+    elif command[0] == "quit":
+        confirm = input("Are you sure? (Type \"y\" to confirm)\n> ")
+        if confirm in ("y", "yes"):
+            print("\nExiting game...\n")
+            game_on = False
+        else:
+            print()
 
     else:
         print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))

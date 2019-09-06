@@ -2,9 +2,9 @@ from text_style import error_text
 
 
 class Player:
-    def __init__(self, init_loc, init_items=[]):
-        self.loc = init_loc
-        self.items = init_items
+    def __init__(self, data):
+        self.loc = data["init_loc"]
+        self.items = data["init_items"]
 
     def move(self, dir):
         if hasattr(self.loc, f"{dir}_to"):

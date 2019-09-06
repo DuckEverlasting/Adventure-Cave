@@ -45,8 +45,8 @@ item = {
     ),
     "goblin_corpse": Item(
         {
-            "name": item_text("goblin_corpse"),
-            "long_name": f"a {item_text('goblin_corpse')}",
+            "name": item_text("goblin corpse"),
+            "long_name": f"a {item_text('goblin corpse')}",
             "desc": desc_text(
                 f"It's a dead goblin. You turn it over, looking for valuables, but all you can find is a\ncrumpled {item_in_desc_text('matchbook')}, which falls to the floor next to the corpse."
             ),
@@ -68,47 +68,64 @@ item = {
 # Declare the rooms
 room = {
     "outside": Room(
-        "Outside Cave Entrance",
-        desc_text(f"{dir_in_desc_text('North')} of you, the cave mouth beckons."),
-        True,
+        {
+            "name": "Outside Cave Entrance",
+            "desc": desc_text(
+                f"{dir_in_desc_text('North')} of you, the cave mouth beckons."
+            ),
+            "no_mobs": True,
+            "init_items": [],
+        }
     ),
     "foyer": Room(
-        "Foyer",
-        desc_text(
-            f"Dim light filters in from the {dir_in_desc_text('south')}. Dusty passages run {dir_in_desc_text('north')} and {dir_in_desc_text('east')}."
-        ),
-        False,
-        [item["sword"]],
+        {
+            "name": "Foyer",
+            "desc": desc_text(
+                f"Dim light filters in from the {dir_in_desc_text('south')}. Dusty passages run {dir_in_desc_text('north')} and {dir_in_desc_text('east')}."
+            ),
+            "no_mobs": False,
+            "init_items": [item["sword"]],
+        }
     ),
     "overlook": Room(
-        "Grand Overlook",
-        desc_text(
-            f"A steep cliff appears before you, falling into the darkness. Ahead to the {dir_in_desc_text('north')}, a light\nflickers in the distance, but there is no way across the chasm.\nA passage leads {dir_in_desc_text('south')}, away from the cliff."
-        ),
-        False,
-        [item["rope"]],
+        {
+            "name": "Grand Overlook",
+            "desc": desc_text(
+                f"A steep cliff appears before you, falling into the darkness. Ahead to the {dir_in_desc_text('north')}, a light\nflickers in the distance, but there is no way across the chasm.\nA passage leads {dir_in_desc_text('south')}, away from the cliff."
+            ),
+            "no_mobs": False,
+            "init_items": [item["rope"]],
+        }
     ),
     "narrow": Room(
-        "Narrow Passage",
-        desc_text(
-            f"The narrow passage bends here from {dir_in_desc_text('west')} to {dir_in_desc_text('north')}. The smell of gold permeates the air."
-        ),
-        False,
+        {
+            "name": "Narrow Passage",
+            "desc": desc_text(
+                f"The narrow passage bends here from {dir_in_desc_text('west')} to {dir_in_desc_text('north')}. The smell of gold permeates the air."
+            ),
+            "no_mobs": False,
+            "init_items": [],
+        }
     ),
     "treasure": Room(
-        "Treasure Chamber",
-        desc_text(
-            f"You've found the long-lost treasure chamber! Sadly, it has already been completely emptied by\nearlier adventurers. The only exit is to the {dir_in_desc_text('south')}."
-        ),
-        False,
-        [item["lantern"]],
+        {
+            "name": "Treasure Chamber",
+            "desc": desc_text(
+                f"You've found the long-lost treasure chamber! Sadly, it has already been completely emptied by\nearlier adventurers. The only exit is to the {dir_in_desc_text('south')}."
+            ),
+            "no_mobs": False,
+            "init_items": [item["lantern"]],
+        }
     ),
     "chasm": Room(
-        "Over The Edge",
-        desc_text(
-            f"You find yourself suspended over a dark chasm, at the end of a rope that was clearly not\nlong enough for this job. It is dark. You can't see a thing. You are likely to be eaten by a grue.\nThe rope leads back {dir_in_desc_text('up')}."
-        ),
-        True,
+        {
+            "name": "Over The Edge",
+            "desc": desc_text(
+                f"You find yourself suspended over a dark chasm, at the end of a rope that was clearly not\nlong enough for this job. It is dark. You can't see a thing. You are likely to be eaten by a grue.\nThe rope leads back {dir_in_desc_text('up')}."
+            ),
+            "no_mobs": True,
+            "init_items": [],
+        }
     ),
 }
 
@@ -116,22 +133,32 @@ room = {
 
 mob = {
     "goblin": Mob(
-        mob_text("goblin"),
-        f"a {mob_text('goblin')}",
-        desc_text(
-            f"The {mob_in_desc_text('goblin')} is eyeing you warily and shuffling his weight from one foot to the other.\nA crude knife dangles from his belt."
-        ),
-        f"A {mob_text('goblin')} shuffles into the room. At the sight of you, he gives a squeal of surprise and bares his teeth.",
-        f"The {mob_text('goblin')} skitters out of the room, heading ",
-        room["foyer"],
+        {
+            "name": mob_text("goblin"),
+            "long_name": f"a {mob_text('goblin')}",
+            "desc": desc_text(
+                f"The {mob_in_desc_text('goblin')} is eyeing you warily and shuffling his weight from one foot to the other.\nA crude knife dangles from his belt."
+            ),
+            "enter_text": f"A {mob_text('goblin')} shuffles into the room. At the sight of you, he gives a squeal of surprise and bares his teeth.",
+            "exit_text": f"The {mob_text('goblin')} skitters out of the room, heading ",
+            "init_loc": room["foyer"],
+        }
     )
 }
 
 # Declare the player
-player = Player(room["outside"])
+player = Player(
+    {
+        "init_loc": room["outside"],
+        "init_items": [],
+    }
+)
 
 # Link rooms together
-room["outside"].n_to = (room["foyer"], "You step into the mouth of the cave.")
+room["outside"].n_to = (
+    room["foyer"],
+    "You step into the mouth of the cave."
+)
 room["foyer"].s_to = (
     room["outside"],
     "You head south, and find yourself outside the cave.",
@@ -152,14 +179,22 @@ room["narrow"].w_to = (
     room["foyer"],
     "You move west through the cramped passage until it opens up a bit.",
 )
-room["narrow"].n_to = (room["treasure"], "You follow your nose and head north.")
-room["treasure"].s_to = (room["narrow"], "You head south into the narrow passage.")
+room["narrow"].n_to = (
+    room["treasure"],
+    "You follow your nose and head north."
+)
+room["treasure"].s_to = (
+    room["narrow"],
+    "You head south into the narrow passage."
+)
 room["chasm"].u_to = (
     room["overlook"],
     "You climb slowly back up the rope, and pull yourself back onto the overlook, panting.",
 )
 
 # Add functionality to items
+
+# sword
 def use_sword():
     if mob["goblin"].loc == player.loc:
         print(
@@ -176,12 +211,17 @@ def use_sword():
 
 item["sword"].use = use_sword
 
+# rope
 def use_rope():
     if player.loc == room["overlook"]:
         print(
             f"You tie off one end of the {item_text('rope')} to a convenient stalagmite and drop the rest off the cliff.\n"
         )
+
+        # remove from inventory
         player.remove_item(item["rope"])
+        
+        # modify the room
         room["overlook"].add_item(item["rope"])
         room["overlook"].desc = desc_text(
             f"A steep cliff appears before you, falling into the darkness. Ahead to the {dir_in_desc_text('north')}, a light\nflickers in the distance, but there is no way across the chasm.\nA passage leads {dir_in_desc_text('south')}, away from the cliff. A tied off rope offers a way {dir_in_desc_text('down')}."
@@ -190,30 +230,34 @@ def use_rope():
             room["chasm"],
             "You climb down the rope, and make it about a third of the way\ndown the cliff before you reach the end of the line. Oh dear.",
         )
+        
+        # modify the item
         item["rope"].long_name = f"a tied off length of {item_text('rope')}"
         item["rope"].desc = desc_text(
             "The rope looks pretty sturdy. It will probably hold your weight. Probably."
         )
         item["rope"].obtainable = False
-
         def use_from_env_rope():
             player.move("d")
-
         item["rope"].use_from_env = use_from_env_rope
+
     else:
         print(f"You try to use the {item_text('rope')} as a lasso, and fail miserably.")
 
 item["rope"].use = use_rope
 
+# lantern
 def use_lantern():
     pass
 
 item["lantern"].use = use_lantern
 
+
 def use_matchbook():
     pass
 
 item["matchbook"].use = use_matchbook
+
 
 def on_look_goblin_corpse():
     item["goblin_corpse"].desc = "It's a dead goblin. You don't want to touch it again."

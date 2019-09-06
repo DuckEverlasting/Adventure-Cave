@@ -3,13 +3,13 @@ from text_style import dir_text
 
 
 class Mob:
-    def __init__(self, name, long_name, desc, enter_text, exit_text, init_loc):
-        self.name = name
-        self.long_name = long_name
-        self.desc = desc
-        self.enter_text = enter_text
-        self.exit_text = exit_text
-        self.loc = init_loc
+    def __init__(self, data):
+        self.name = data["name"]
+        self.long_name = data["long_name"]
+        self.desc = data["desc"]
+        self.enter_text = data["enter_text"]
+        self.exit_text = data["exit_text"]
+        self.loc = data["init_loc"]
         self.prev_loc = None
         self.alive = True
 

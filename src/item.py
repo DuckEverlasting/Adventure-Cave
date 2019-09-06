@@ -7,3 +7,6 @@ class Item:
 
     def __str__(self):
         return self.name
+
+class Light_Source(Item):
+    pass
