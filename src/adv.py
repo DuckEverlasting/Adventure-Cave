@@ -2,7 +2,6 @@ import time
 from colorama import init as color_init
 import os
 
-from definitions import item, room, mob, player
 from text_style import (
     title_text,
     error_text,
@@ -15,6 +14,7 @@ from text_style import (
     dir_in_desc_text,
 )
 from logic import parse_list, single_word_replace, multi_word_replace
+from definitions import item, room, mob, player
 
 # Clear terminal
 os.system("cls" if os.name == "nt" else "clear")
