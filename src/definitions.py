@@ -1,6 +1,6 @@
 from room import Room
 from player import Player
-from item import Item
+from item import Item, Light_Source
 from mob import Mob
 from text_style import (
     desc_text,
@@ -22,7 +22,7 @@ item = {
             "This sword has seen better days, but it's probably got one or two good swings left in it."
         ),
     ),
-    "lantern": Item(
+    "lantern": Light_Source(
         name=item_text("lantern"),
         long_name=f"an extinguished {item_text('lantern')}",
         desc=desc_text(
@@ -46,7 +46,7 @@ item = {
         name=item_text("matchbook"),
         long_name=f"a {item_text('matchbook')}",
         desc=desc_text(
-            "At first glance, the crumpled matchbook appears to be empty, but looking closer,\nyou see it still has one match inside."
+            "At first glance, the crumpled matchbook appears to be empty, but looking closer,\nyou see it still has a few matches inside."
         ),
     ),
 }
@@ -108,6 +108,11 @@ mob = {
         ),
         enter_text = f"A {mob_text('goblin')} shuffles into the room. At the sight of you, he gives a squeal of surprise and bares his teeth.",
         exit_text = f"The {mob_text('goblin')} skitters out of the room, heading ",
+        idle_text = (
+            f"The {mob_text('goblin')} grumbles nervously about how crowded the cave has gotten lately.",
+            f"The {mob_text('goblin')} pulls out a knife, then thinks better of it and puts the knife back.",
+            f"The {mob_text('goblin')} is momentarily transfixed by a rash on his elbow.",
+        ),
         init_loc = room["foyer"],
     )
 }
@@ -119,32 +124,14 @@ player = Player(init_loc = room["outside"])
 
 # Link rooms together
 room["outside"].n_to = (room["foyer"], "You step into the mouth of the cave.")
-room["foyer"].s_to = (
-    room["outside"],
-    "You head south, and find yourself outside the cave.",
-)
-room["foyer"].n_to = (
-    room["overlook"],
-    "You make your way north, and the cave opens up suddenly, revealing a vast chasm before you.",
-)
-room["foyer"].e_to = (
-    room["narrow"],
-    "You take the eastern passage. It grows narrower until you have a hard time standing straight.",
-)
-room["overlook"].s_to = (
-    room["foyer"],
-    "You step back from the cliff's edge and head south.",
-)
-room["narrow"].w_to = (
-    room["foyer"],
-    "You move west through the cramped passage until it opens up a bit.",
-)
+room["foyer"].s_to = (room["outside"], "You head south, and find yourself outside the cave.")
+room["foyer"].n_to = (room["overlook"], "You make your way north, and the cave opens up suddenly, revealing a vast chasm before you.")
+room["foyer"].e_to = (room["narrow"], "You take the eastern passage. It grows narrower until you have a hard time standing straight.")
+room["overlook"].s_to = (room["foyer"], "You step back from the cliff's edge and head south.")
+room["narrow"].w_to = (room["foyer"], "You move west through the cramped passage until it opens up a bit.")
 room["narrow"].n_to = (room["treasure"], "You follow your nose and head north.")
 room["treasure"].s_to = (room["narrow"], "You head south into the narrow passage.")
-room["chasm"].u_to = (
-    room["overlook"],
-    "You climb slowly back up the rope, and pull yourself back onto the overlook, panting.",
-)
+room["chasm"].u_to = (room["overlook"], "You climb slowly back up the rope, and pull yourself back onto the overlook, panting.")
 
 
 # Add functionality to items
@@ -161,8 +148,9 @@ def use_sword():
         print(
             f"You swing the {item_text('sword')} around wildly. After a few wide arcs, it slips out of your fingers and clatters to the ground.\n"
         )
-        player.remove_item(item["sword"])
-        player.loc.add_item(item["sword"])
+        player.drop_item(item["sword"], quiet = True)
+    
+    return True
 
 
 item["sword"].use = use_sword
@@ -175,10 +163,9 @@ def use_rope():
         )
 
         # remove from inventory
-        player.remove_item(item["rope"])
+        player.drop_item(item["rope"], quiet = True)
 
         # modify the room
-        room["overlook"].add_item(item["rope"])
         room["overlook"].desc = desc_text(
             f"A steep cliff appears before you, falling into the darkness. Ahead to the {dir_in_desc_text('north')}, a light\nflickers in the distance, but there is no way across the chasm.\nA passage leads {dir_in_desc_text('south')}, away from the cliff. A tied off rope offers a way {dir_in_desc_text('down')}."
         )
@@ -196,11 +183,14 @@ def use_rope():
 
         def use_from_env_rope():
             player.move("d")
+            return True
 
         item["rope"].use_from_env = use_from_env_rope
 
     else:
         print(f"You try to use the {item_text('rope')} as a lasso, and fail miserably.")
+    
+    return True
 
 
 item["rope"].use = use_rope

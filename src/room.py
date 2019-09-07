@@ -18,8 +18,10 @@ class Room:
         if item in self.items:
             if item.obtainable:
                 self.items.remove(item)
-                return (True,)
+                return True
             else:
-                return (False, "You decide to leave it there.")
+                print("You decide to leave it there.")
+                return False
         else:
-            return (False, error_text("ERROR: NOTHING HERE BY THAT NAME\n"))
+            
+            return False

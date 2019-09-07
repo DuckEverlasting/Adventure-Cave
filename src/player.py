@@ -18,38 +18,55 @@ class Player:
 
     def look_item(self, item):
         if item in self.items or item in self.loc.items:
+            print(f"{item.desc}\n")
+            item.on_look()
             return True
         else:
+            print(error_text("ERROR: NOTHING HERE BY THAT NAME\n"))
             return False
 
-    def add_item(self, item):
-        self.items.append(item)
-
-    def remove_item(self, item):
-        if item in self.items:
-            self.items.remove(item)
+    def look_mob(self, mob):
+        if mob.loc == self.loc:
+            print(f"{mob.desc}\n")
+            mob.on_look()
             return True
         else:
+            print(error_text("ERROR: NOTHING HERE BY THAT NAME\n"))
+            return False
+
+    def get_item(self, item):
+        if item in self.loc.items:
+            result = self.loc.remove_item(item)
+            if result:
+                self.items.append(item)
+                print(f"You pick up the {item.name}.\n")
+                item.on_pick_up()
+                return True
+            else:
+                return False
+        else:
+            print(error_text("ERROR: NOTHING HERE BY THAT NAME\n"))
+            return False
+        
+
+    def drop_item(self, item, quiet=False):
+        if item in self.items:
+            self.items.remove(item)
+            if quiet == False:
+                print(f"You set down the {item.name}.\n")
+            self.loc.add_item(item)
+            return True
+        else:
+            print(error_text("ERROR: NO SUCH ITEM IN INVENTORY\n"))
             return False
     
     def use_item(self, item):
         if item in self.items:
-            if hasattr(item, "use"):
-                item.use()
-                return True
-            else:
-                print("You can't use that.\n")
-                return False
+            return item.use()
+        
         elif item in self.loc.items:
-            if hasattr(item, "use_from_env"):
-                item.use_from_env()
-                return True
-            elif item.obtainable:
-                print("Try picking it up first.\n")
-                return False
-            else:
-                print("You can't use that.\n")
-                return False
+            return item.use_from_env()
+                
         else:
             print("There is no such item here.\n")
             return False
