@@ -16,6 +16,7 @@ single_word_replace = {
     "u": "use",
     "swing": "wield",
     "q": "quit",
+    "amulet": "amulet_of_yendor"
 }
 
 multi_word_replace = {
@@ -24,6 +25,7 @@ multi_word_replace = {
     "put down": "drop",
     "attack with": "wield",
     "goblin corpse": "goblin_corpse",
+    "amulet of yendor": "amulet_of_yendor"
 }
 
 ignore_word = (

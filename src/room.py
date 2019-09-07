@@ -2,10 +2,13 @@ from text_style import error_text
 
 
 class Room:
-    def __init__(self, name, desc, no_mobs=False, init_items=[]):
+    def __init__(self, name, desc, dark=False, dark_desc="", no_mobs=False, no_drop=False, init_items=[]):
         self.name = name
         self.desc = desc
+        self.dark = dark
+        self.dark_desc = dark_desc
         self.no_mobs = no_mobs
+        self.no_drop = no_drop
         self.items = init_items
 
     def __str__(self):
@@ -20,7 +23,7 @@ class Room:
                 self.items.remove(item)
                 return True
             else:
-                print("You decide to leave it there.")
+                print("You decide to leave it there.\n")
                 return False
         else:
             

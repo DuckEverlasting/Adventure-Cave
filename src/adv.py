@@ -15,7 +15,7 @@ from text_style import (
     dir_in_desc_text,
 )
 from logic import parse_list, parse_command
-from definitions import item, room, mob, player
+from definitions import item, room, mob, player, light_check
 
 # Clear terminal
 os.system("cls" if os.name == "nt" else "clear")
@@ -32,33 +32,36 @@ game_on = True
 time_passed = False
 player_moved = False
 
-def pause(): time.sleep(0.75)
+
+def pause(num=0.75):
+    time.sleep(num)
+
 
 # Opening sequence
 print(
     title_text(
         """
-⎸‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾⎹
-⎸    █████╗ ██████╗ ██╗   ██╗███████╗███╗   ██╗████████╗██╗   ██╗██████╗ ███████╗   ⎹
-⎸   ██╔══██╗██╔══██╗██║   ██║██╔════╝████╗  ██║╚══██╔══╝██║   ██║██╔══██╗██╔════╝   ⎹
-⎸   ███████║██║  ██║██║   ██║█████╗  ██╔██╗ ██║   ██║   ██║   ██║██████╔╝█████╗     ⎹
-⎸   ██╔══██║██║  ██║╚██╗ ██╔╝██╔══╝  ██║╚██╗██║   ██║   ██║   ██║██╔══██╗██╔══╝     ⎹
-⎸   ██║  ██║██████╔╝ ╚████╔╝ ███████╗██║ ╚████║   ██║   ╚██████╔╝██║  ██║███████╗   ⎹
-⎸   ╚═╝  ╚═╝╚═════╝   ╚═══╝  ╚══════╝╚═╝  ╚═══╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝   ⎹
-⎸                                                                                   ⎹
-⎸                         ██████╗ █████╗ ██╗   ██╗███████╗                          ⎹
-⎸                        ██╔════╝██╔══██╗██║   ██║██╔════╝                          ⎹
-⎸                        ██║     ███████║██║   ██║█████╗                            ⎹
-⎸                        ██║     ██╔══██║╚██╗ ██╔╝██╔══╝                            ⎹
-⎸                        ╚██████╗██║  ██║ ╚████╔╝ ███████╗                          ⎹
-⎸                         ╚═════╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝                          ⎹
-⎸___________________________________________________________________________________⎹
+█‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾█
+█    █████╗ ██████╗ ██╗   ██╗███████╗███╗   ██╗████████╗██╗   ██╗██████╗ ███████╗   █
+█   ██╔══██╗██╔══██╗██║   ██║██╔════╝████╗  ██║╚══██╔══╝██║   ██║██╔══██╗██╔════╝   █
+█   ███████║██║  ██║██║   ██║█████╗  ██╔██╗ ██║   ██║   ██║   ██║██████╔╝█████╗     █
+█   ██╔══██║██║  ██║╚██╗ ██╔╝██╔══╝  ██║╚██╗██║   ██║   ██║   ██║██╔══██╗██╔══╝     █
+█   ██║  ██║██████╔╝ ╚████╔╝ ███████╗██║ ╚████║   ██║   ╚██████╔╝██║  ██║███████╗   █
+█   ╚═╝  ╚═╝╚═════╝   ╚═══╝  ╚══════╝╚═╝  ╚═══╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝╚══════╝   █
+█                                                                                   █
+█                         ██████╗ █████╗ ██╗   ██╗███████╗                          █
+█                        ██╔════╝██╔══██╗██║   ██║██╔════╝                          █
+█                        ██║     ███████║██║   ██║█████╗                            █
+█                        ██║     ██╔══██║╚██╗ ██╔╝██╔══╝                            █
+█                        ╚██████╗██║  ██║ ╚████╔╝ ███████╗                          █
+█                         ╚═════╝╚═╝  ╚═╝  ╚═══╝  ╚══════╝                          █
+█___________________________________________________________________________________█
 
 """
     )
 )
 
-time.sleep(2)
+pause(2)
 
 os.system("cls" if os.name == "nt" else "clear")
 
@@ -86,7 +89,6 @@ while game_on:
                 print(f"{mob[i].exit_text}{result}\n")
                 # Brief pause included for flavor
                 pause()
-            
 
     spacers = ""
     for i in range(len(player.loc.name)):
@@ -95,17 +97,24 @@ while game_on:
     print(spacers)
     print(player.loc.name)
     print(spacers)
-    print(f"{player.loc.desc}\n")
+    if player.loc.dark and light_check() == False:
+        print(f"{player.loc.dark_desc}\n")
+    else:
+        print(f"{player.loc.desc}\n")
 
     mobs_here = [mob[i] for i in mob if mob[i].alive and mob[i].loc == player.loc]
 
-    if len(player.loc.items) > 0:
-        print(f"You see {parse_list(player.loc.items)} here.")
-        if len(mobs_here) == 0:
-            print()
+    if player.loc.dark == False or light_check():
+        if len(player.loc.items) > 0:
+            print(f"You see {parse_list(player.loc.items)} here.")
+            if len(mobs_here) == 0:
+                print()
 
-    if len(mobs_here) > 0:
-        print(f"You see {parse_list(mobs_here)} here.\n")
+        if len(mobs_here) > 0:
+            print(f"You see {parse_list(mobs_here)} here.\n")
+    else:
+        if len(mobs_here) > 0:
+            print(f"You hear {parse_list('something')} moving in the darkness.\n")
 
     # Reset variables
     time_passed = False
@@ -113,7 +122,7 @@ while game_on:
 
     # Player's turn
     command = input("> ").lower()
-    
+
     # Parse command
     command = parse_command(command)
 
@@ -136,14 +145,7 @@ while game_on:
             print(f"Exit game: \"{item_text('q')}uit\"")
             print()
 
-        elif command[0] in (
-            "north",
-            "south",
-            "east",
-            "west",
-            "down",
-            "up",
-        ):
+        elif command[0] in ("north", "south", "east", "west", "down", "up"):
             dir = command[0][0]
             result = player.move(dir)
             if result:
@@ -155,24 +157,24 @@ while game_on:
                 print(f"You have {parse_list(player.items)} in your inventory.\n")
             else:
                 print("You have no items in your inventory.\n")
-        
+
         elif command[0] == "wait":
             time_passed = True
-        
+
         elif command[0] == "look":
             print("What would you like to look at?\n")
-        
+
         elif command[0] == "get":
             print(f"What would you like to get?\n")
-        
+
         elif command[0] == "drop":
             print(f"What would you like to drop?\n")
-        
+
         elif command[0] == "use":
             print(f"What would you like to use?\n")
-        
+
         elif command[0] == "quit":
-            confirm = input("Are you sure? (Type \"y\" to confirm)\n> ")
+            confirm = input('Are you sure? (Type "y" to confirm)\n> ')
             if confirm in ("y", "yes"):
                 print("\nExiting game...\n")
                 game_on = False
@@ -183,30 +185,36 @@ while game_on:
 
     # Two word handler
     elif len(command) == 2:
-        
+
         if command[0] == "look":
-            if command[1] in item:
+            if player.loc.dark and light_check() == False:
+                print("Too dark for that right now.\n")
+            elif command[1] in item:
                 selected = item[command[1]]
                 result = player.look_item(selected)
-                if result: time_passed = True
+                if result:
+                    time_passed = True
             elif command[1] in mob:
                 selected = mob[command[1]]
                 result = player.look_mob(selected)
-                if result: time_passed = True
+                if result:
+                    time_passed = True
             else:
                 print(error_text("ERROR: NOTHING HERE BY THAT NAME\n"))
 
         elif command[0] == "get":
             if command[1] in item:
                 result = player.get_item(item[command[1]])
-                if result: time_passed = True
+                if result:
+                    time_passed = True
             else:
                 print(error_text("ERROR: NOTHING HERE BY THAT NAME\n"))
 
         elif command[0] in ("drop", "leave"):
             if command[1] in item:
                 result = player.drop_item(item[command[1]])
-                if result: time_passed = True
+                if result:
+                    time_passed = True
             else:
                 print(error_text("ERROR: NO SUCH ITEM IN INVENTORY\n"))
 
@@ -217,7 +225,8 @@ while game_on:
 
         elif command[0] == "wield" and command[1] == "sword":
             result = player.use_item(item[command[1]])
-            if result: time_passed = True
+            if result:
+                time_passed = True
 
         else:
             print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))
@@ -227,3 +236,26 @@ while game_on:
 
     # Brief pause included for flavor
     pause()
+
+    if item["amulet_of_yendor"] in player.items:
+        game_on = False
+        print("You've won the game! Congratulations!!!")
+        pause()
+        print(
+            title_text(
+                """
+█‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾█
+█     ██████╗  █████╗ ███╗   ███╗███████╗     ██████╗ ██╗   ██╗███████╗██████╗      █
+█    ██╔════╝ ██╔══██╗████╗ ████║██╔════╝    ██╔═══██╗██║   ██║██╔════╝██╔══██╗     █
+█    ██║  ███╗███████║██╔████╔██║█████╗      ██║   ██║██║   ██║█████╗  ██████╔╝     █
+█    ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝      ██║   ██║╚██╗ ██╔╝██╔══╝  ██╔══██╗     █
+█    ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗    ╚██████╔╝ ╚████╔╝ ███████╗██║  ██║     █
+█     ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝     ╚═════╝   ╚═══╝  ╚══════╝╚═╝  ╚═╝     █
+█___________________________________________________________________________________█
+
+"""
+            )
+        )
+
+        pause(2)
+

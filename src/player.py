@@ -51,6 +51,9 @@ class Player:
 
     def drop_item(self, item, quiet=False):
         if item in self.items:
+            if self.loc.no_drop:
+                print("You don't think that's a good idea here.\n")
+                return False
             self.items.remove(item)
             if quiet == False:
                 print(f"You set down the {item.name}.\n")

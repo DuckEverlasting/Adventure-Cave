@@ -30,14 +30,3 @@ class Light_Source(Item):
     def __init__(self, name, long_name, desc, obtainable=True, active=False):
         super().__init__(name, long_name, desc, obtainable)
         self.active = active
-    
-    def on_light(self):
-        pass
-
-    def light(self):
-        if self.active:
-            print(f"The {self.name} is already lit.\n")
-        else:
-            self.active = True
-            print(f"You light the {self.name}. The room brightens.\n")
-            self.on_light()
