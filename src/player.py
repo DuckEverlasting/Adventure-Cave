@@ -6,6 +6,20 @@ class Player:
         self.loc = init_loc
         self.items = init_items
 
+    def light_check(self):
+        light_source = False
+        for i in self.items:
+            try:
+                if i.active: light_source = True
+            except:
+                pass
+        for i in self.loc.items:
+            try:
+                if i.active: light_source = True
+            except:
+                pass
+        return light_source
+
     def move(self, dir):
         if hasattr(self.loc, f"{dir}_to"):
             dest = getattr(self.loc, f"{dir}_to")
@@ -22,7 +36,7 @@ class Player:
             item.on_look()
             return True
         else:
-            print(error_text("ERROR: NOTHING HERE BY THAT NAME\n"))
+            print("There's nothing here by that name.\n")
             return False
 
     def look_mob(self, mob):
@@ -31,7 +45,7 @@ class Player:
             mob.on_look()
             return True
         else:
-            print(error_text("ERROR: NOTHING HERE BY THAT NAME\n"))
+            print("There's nothing here by that name.\n")
             return False
 
     def get_item(self, item):
@@ -45,9 +59,8 @@ class Player:
             else:
                 return False
         else:
-            print(error_text("ERROR: NOTHING HERE BY THAT NAME\n"))
+            print("There's nothing here by that name.\n")
             return False
-        
 
     def drop_item(self, item, quiet=False):
         if item in self.items:
@@ -60,7 +73,7 @@ class Player:
             self.loc.add_item(item)
             return True
         else:
-            print(error_text("ERROR: NO SUCH ITEM IN INVENTORY\n"))
+            print("You don't have one of those in your inventory\n")
             return False
     
     def use_item(self, item):
@@ -71,5 +84,16 @@ class Player:
             return item.use_from_env()
                 
         else:
-            print("There is no such item here.\n")
+            print("There's nothing here by that name.\n")
+            return False
+    
+    def eat_item(self, item):
+        if item in self.items:
+            return item.eat()
+        
+        elif item in self.loc.items:
+            return item.eat()
+                
+        else:
+            print("There's nothing here by that name.\n")
             return False

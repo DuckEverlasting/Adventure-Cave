@@ -12,6 +12,10 @@ class Item:
         print(f"You don't see a way to use the {self.name}.\n")
         return False
     
+    def eat(self):
+        print(f"That's... not food.\n")
+        return False
+    
     def use_from_env(self):
         if self.obtainable:
             print("Try picking it up first.\n")

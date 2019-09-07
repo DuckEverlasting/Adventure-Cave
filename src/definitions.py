@@ -149,21 +149,6 @@ mob = {
 # Declare the player
 player = Player(init_loc = room["outside"])
 
-# Light check function
-def light_check():
-    light_source = False
-    for i in player.items:
-        try:
-            if i.active: light_source = True
-        except:
-            pass
-    for i in player.loc.items:
-        try:
-            if i.active: light_source = True
-        except:
-            pass
-    return light_source
-
 # Link rooms together
 room["outside"].n_to = (room["foyer"], "You step into the mouth of the cave.")
 room["foyer"].s_to = (room["outside"], "You head south, and find yourself outside the cave.")
@@ -281,12 +266,17 @@ def on_look_goblin_corpse():
     player.loc.add_item(item["matchbook"])
     delattr(item["goblin_corpse"], "on_look")
 
-
 item["goblin_corpse"].on_look = on_look_goblin_corpse
+
+def eat_goblin_corpse():
+    print("What? No. That's just... no.\n\nGross.\n")
+    return False
+
+item["goblin_corpse"].eat = eat_goblin_corpse
 
 # lever
 def use_from_env_lever():
-    if light_check():
+    if player.light_check():
         print("You pull the lever. A loud rinding noise echoes through the chasm. You nearly lose your grip but\nmanage to hold on as a bridge lowers from the ceiling of the cave, shuddering into place\nabove you. Looks like you can cross the chasm now. What are the odds that lever would be in this exact\nplace on the cliff side?\n")
         room["overlook"].desc = desc_text(
             f"A steep cliff appears before you, falling into the darkness. Ahead to the {dir_in_desc_text('north')}, a narrow bridge\nhas been lowered, leading to a light flickering in the distance. A passage leads {dir_in_desc_text('south')}, away from the cliff.\nA tied off rope offers a way {dir_in_desc_text('down')}."

@@ -15,7 +15,7 @@ from text_style import (
     dir_in_desc_text,
 )
 from logic import parse_list, parse_command
-from definitions import item, room, mob, player, light_check
+from definitions import item, room, mob, player
 
 # Clear terminal
 os.system("cls" if os.name == "nt" else "clear")
@@ -61,7 +61,7 @@ print(
     )
 )
 
-pause(2)
+pause(3)
 
 os.system("cls" if os.name == "nt" else "clear")
 
@@ -97,14 +97,14 @@ while game_on:
     print(spacers)
     print(player.loc.name)
     print(spacers)
-    if player.loc.dark and light_check() == False:
+    if player.loc.dark and player.light_check() == False:
         print(f"{player.loc.dark_desc}\n")
     else:
         print(f"{player.loc.desc}\n")
 
     mobs_here = [mob[i] for i in mob if mob[i].alive and mob[i].loc == player.loc]
 
-    if player.loc.dark == False or light_check():
+    if player.loc.dark == False or player.light_check():
         if len(player.loc.items) > 0:
             print(f"You see {parse_list(player.loc.items)} here.")
             if len(mobs_here) == 0:
@@ -164,19 +164,14 @@ while game_on:
         elif command[0] == "look":
             print("What would you like to look at?\n")
 
-        elif command[0] == "get":
-            print(f"What would you like to get?\n")
-
-        elif command[0] == "drop":
-            print(f"What would you like to drop?\n")
-
-        elif command[0] == "use":
-            print(f"What would you like to use?\n")
+        elif command[0] in ("get", "drop", "use", "eat"):
+            print(f"What would you like to {command[0]}?\n")
 
         elif command[0] == "quit":
             confirm = input('Are you sure? (Type "y" to confirm)\n> ')
             if confirm in ("y", "yes"):
                 print("\nExiting game...\n")
+                pause(.5)
                 game_on = False
             else:
                 print()
@@ -187,20 +182,18 @@ while game_on:
     elif len(command) == 2:
 
         if command[0] == "look":
-            if player.loc.dark and light_check() == False:
+            if player.loc.dark and player.light_check() == False:
                 print("Too dark for that right now.\n")
             elif command[1] in item:
-                selected = item[command[1]]
-                result = player.look_item(selected)
+                result = player.look_item(item[command[1]])
                 if result:
                     time_passed = True
             elif command[1] in mob:
-                selected = mob[command[1]]
-                result = player.look_mob(selected)
+                result = player.look_mob(mob[command[1]])
                 if result:
                     time_passed = True
             else:
-                print(error_text("ERROR: NOTHING HERE BY THAT NAME\n"))
+                print("There's nothing here by that name.\n")
 
         elif command[0] == "get":
             if command[1] in item:
@@ -208,7 +201,7 @@ while game_on:
                 if result:
                     time_passed = True
             else:
-                print(error_text("ERROR: NOTHING HERE BY THAT NAME\n"))
+                print("There's nothing here by that name.\n")
 
         elif command[0] in ("drop", "leave"):
             if command[1] in item:
@@ -216,17 +209,34 @@ while game_on:
                 if result:
                     time_passed = True
             else:
-                print(error_text("ERROR: NO SUCH ITEM IN INVENTORY\n"))
+                print("You don't have one of those in your inventory\n")
 
         elif command[0] == "use":
-            if len(command) > 1 and command[1] in item:
-                player.use_item(item[command[1]])
-                time_passed = True
+            if command[1] in item:
+                result = player.use_item(item[command[1]])
+                if result:
+                    time_passed = True
+            else:
+                print("There's nothing here by that name.\n")
 
         elif command[0] == "wield" and command[1] == "sword":
             result = player.use_item(item[command[1]])
             if result:
                 time_passed = True
+
+        elif command[0] == "eat":
+            if command[1] in item:
+                result = player.eat_item(item[command[1]])
+                if result:
+                    time_passed = True
+            elif command[1] in mob:
+                if mob[command[1]].loc == player.loc:
+                    print(f"That's... not food.\n")
+                else:
+                    print("There's nothing here by that name.\n")
+            else:
+                print("There's nothing here by that name.\n")
+
 
         else:
             print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))
@@ -257,5 +267,5 @@ while game_on:
             )
         )
 
-        pause(2)
+        pause(3)
 
