@@ -125,121 +125,120 @@ while game_on:
 
     # Parse command
     command = parse_command(command)
+    action = command["action"]
+    d_obj = command["d_obj"]
+    prep = command["prep"]
+    i_obj = command["i_obj"]
 
     # Resolve player action
     print()
 
-    # One word handler
-    if len(command) == 1:
+    if action == "error":
+        print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))
 
-        if command[0] == "help":
-            print("==============\nBasic Controls\n==============")
-            print(
-                f"Move around: \"{item_text('n')}orth\", \"{item_text('s')}outh\", \"{item_text('e')}ast\", \"{item_text('w')}est\", \"down\", \"up\""
-            )
-            print(
-                f"Interact with things: \"{item_text('l')}ook\", \"{item_text('g')}et\", \"{item_text('d')}rop\", \"{item_text('u')}se\""
-            )
-            print(f"Check inventory: \"{item_text('i')}nv\"")
-            print(f"Do nothing: wait")
-            print(f"Exit game: \"{item_text('q')}uit\"")
+    elif action == "help":
+        print("==============\nBasic Controls\n==============")
+        print(
+            f"Move around: \"{item_text('n')}orth\", \"{item_text('s')}outh\", \"{item_text('e')}ast\", \"{item_text('w')}est\", \"down\", \"up\""
+        )
+        print(
+            f"Interact with things: \"{item_text('l')}ook\", \"{item_text('g')}et\", \"{item_text('d')}rop\", \"{item_text('u')}se\""
+        )
+        print(f"Check inventory: \"{item_text('i')}nv\"")
+        print(f"Do nothing: wait")
+        print(f"Exit game: \"{item_text('q')}uit\"")
+        print()
+
+    elif action == "go":
+        dir_letter = command["dir"][0]
+        result = player.move(dir_letter)
+        if result:
+            time_passed = True
+            player_moved = True
+
+    elif action == "inventory":
+        if len(player.items) > 0:
+            print(f"You have {parse_list(player.items)} in your inventory.\n")
+        else:
+            print("You have no items in your inventory.\n")
+
+    elif action == "wait":
+        time_passed = True
+
+    elif action == "quit":
+        confirm = input('Are you sure? (Type "y" to confirm)\n> ')
+        if confirm in ("y", "yes"):
+            print("\nExiting game...\n")
+            pause(.5)
+            game_on = False
+        else:
             print()
 
-        elif command[0] in ("north", "south", "east", "west", "down", "up"):
-            dir = command[0][0]
-            result = player.move(dir)
+    elif action == "look":
+        if not d_obj:
+            print("What would you like to look at?\n")
+        elif player.loc.dark and player.light_check() == False:
+            print("Too dark for that right now.\n")
+        elif d_obj in item:
+            result = player.look_item(item[d_obj])
             if result:
                 time_passed = True
-                player_moved = True
+        elif d_obj in mob:
+            result = player.look_mob(mob[d_obj])
+            if result:
+                time_passed = True
+        else:
+            print("There's nothing here by that name.\n")
 
-        elif command[0] == "inventory":
-            if len(player.items) > 0:
-                print(f"You have {parse_list(player.items)} in your inventory.\n")
-            else:
-                print("You have no items in your inventory.\n")
+    elif action == "get":
+        if not d_obj:
+            print(f"What would you like to {action}?\n")
+        elif d_obj in item:
+            result = player.get_item(item[d_obj])
+            if result:
+                time_passed = True
+        else:
+            print("There's nothing here by that name.\n")
 
-        elif command[0] == "wait":
+    elif action in ("drop", "leave"):
+        if not d_obj:
+            print(f"What would you like to {action}?\n")
+        elif d_obj in item:
+            result = player.drop_item(item[d_obj])
+            if result:
+                time_passed = True
+        else:
+            print("You don't have one of those in your inventory\n")
+
+    elif action == "use":
+        if not d_obj:
+            print(f"What would you like to {action}?\n")
+        elif d_obj in item:
+            result = player.use_item(item[d_obj])
+            if result:
+                time_passed = True
+        else:
+            print("There's nothing here by that name.\n")
+
+    elif action == "wield" and d_obj == "sword":
+        result = player.use_item(item[d_obj])
+        if result:
             time_passed = True
 
-        elif command[0] == "look":
-            print("What would you like to look at?\n")
-
-        elif command[0] in ("get", "drop", "use", "eat"):
-            print(f"What would you like to {command[0]}?\n")
-
-        elif command[0] == "quit":
-            confirm = input('Are you sure? (Type "y" to confirm)\n> ')
-            if confirm in ("y", "yes"):
-                print("\nExiting game...\n")
-                pause(.5)
-                game_on = False
-            else:
-                print()
-        else:
-            print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))
-
-    # Two word handler
-    elif len(command) == 2:
-
-        if command[0] == "look":
-            if player.loc.dark and player.light_check() == False:
-                print("Too dark for that right now.\n")
-            elif command[1] in item:
-                result = player.look_item(item[command[1]])
-                if result:
-                    time_passed = True
-            elif command[1] in mob:
-                result = player.look_mob(mob[command[1]])
-                if result:
-                    time_passed = True
-            else:
-                print("There's nothing here by that name.\n")
-
-        elif command[0] == "get":
-            if command[1] in item:
-                result = player.get_item(item[command[1]])
-                if result:
-                    time_passed = True
-            else:
-                print("There's nothing here by that name.\n")
-
-        elif command[0] in ("drop", "leave"):
-            if command[1] in item:
-                result = player.drop_item(item[command[1]])
-                if result:
-                    time_passed = True
-            else:
-                print("You don't have one of those in your inventory\n")
-
-        elif command[0] == "use":
-            if command[1] in item:
-                result = player.use_item(item[command[1]])
-                if result:
-                    time_passed = True
-            else:
-                print("There's nothing here by that name.\n")
-
-        elif command[0] == "wield" and command[1] == "sword":
-            result = player.use_item(item[command[1]])
+    elif action == "eat":
+        if not d_obj:
+            print(f"What would you like to {action}?\n")
+        elif d_obj in item:
+            result = player.eat_item(item[d_obj])
             if result:
                 time_passed = True
-
-        elif command[0] == "eat":
-            if command[1] in item:
-                result = player.eat_item(item[command[1]])
-                if result:
-                    time_passed = True
-            elif command[1] in mob:
-                if mob[command[1]].loc == player.loc:
-                    print(f"That's... not food.\n")
-                else:
-                    print("There's nothing here by that name.\n")
+        elif d_obj in mob:
+            if mob[d_obj].loc == player.loc:
+                print(f"That's... not food.\n")
             else:
                 print("There's nothing here by that name.\n")
-
-
         else:
-            print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))
+            print("There's nothing here by that name.\n")
 
     else:
         print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))
