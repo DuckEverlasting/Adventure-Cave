@@ -2,6 +2,8 @@ from room import Room
 from player import Player
 from item import Item, Light_Source
 from mob import Mob
+from action import Action
+from action_run import *
 from text_style import (
     desc_text,
     item_text,
@@ -145,6 +147,92 @@ mob = {
     )
 }
 
+# Declare the actions
+action = {
+    "help": Action(
+        name = "help",
+        grammar = {
+            "d_obj_prohibited": True,
+            "i_obj_prohibited": True,
+        },
+        run = run_help
+    ),
+    "go": Action(
+        name = "go",
+        grammar = {
+            "adv_required": True,
+        },
+        run = run_go
+    ),
+    "inventory": Action(
+        name = "inventory",
+        grammar = {
+
+        },
+        run = run_inventory
+    ),
+    "wait": Action(
+        name = "wait",
+        grammar = {},
+        run = run_wait
+    ),
+    "quit": Action(
+        name = "quit",
+        grammar = {
+            "d_obj_prohibited": True,
+            "i_obj_prohibited": True,
+        },
+        run = run_quit
+    ),
+    "look": Action(
+        name = "look",
+        grammar = {
+            "d_obj_prohibited": True,
+            "preps_accepted": ("at", "in", "into", "inside", "beneath", "underneath", "under", "below", )
+        },
+        run = run_look
+    ),
+    "get": Action(
+        name = "get",
+        grammar = {
+            "d_obj_required": True,
+            "i_obj_prohibited": True,
+        },
+        run = run_get
+    ),
+    "drop": Action(
+        name = "drop",
+        grammar = {
+            "d_obj_required": True,
+            "i_obj_prohibited": True,
+        },
+        run = run_drop
+    ),
+    "use": Action(
+        name = "use",
+        grammar = {
+            "d_obj_required": True,
+            "preps_accepted": ("with", "on",)
+        },
+        run = run_use
+    ),
+    "attack": Action(
+        name = "attack",
+        grammar = {
+            "d_obj_required": True,
+            "preps_accepted": ("with", "using"),
+        },
+        run = run_attack
+    ),
+    "eat": Action(
+        name = "eat",
+        grammar = {
+            "d_obj_required": True,
+            "i_obj_prohibited": True,
+        },
+        run = run_eat
+    ),
+}
 
 # Declare the player
 player = Player(init_loc = room["outside"])

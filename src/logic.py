@@ -1,5 +1,4 @@
 multi_word_replace = {
-    "look at": "look_at",
     "pick up": "pick_up",
     "put down": "put_down",
     "attack with": "attack_with",
@@ -58,13 +57,23 @@ prepositions = (
     "out_of"
 )
 
+movement_adverbs = (
+    "north",
+    "south",
+    "east",
+    "west",
+    "up",
+    "down",
+    "in",
+    "out",
+)
+
 action_synonyms = {
     "examine": "look",
     "inspect": "look",
     "take": "get",
     "leave": "drop",
     "swing": "wield",
-    "look_at": "look",
     "pick_up": "get",
     "put_down": "drop",
     "attack_with": "wield",
@@ -113,7 +122,7 @@ def parse_command(command):
     }
 
     # Check for movement shortcuts
-    if command in (["north"], ["south"], ["east"], ["west"], ["up"], ["down"], ["in"], ["out"]):
+    if command in movement_adverbs:
         return {
             "action": "go",
             "adv": command[0],
@@ -122,6 +131,18 @@ def parse_command(command):
             "i_obj": None,
             "error": None
         }
+
+    # Check for command "go" and synonyms
+    if command[0] in (["go", "walk", "travel"]):
+        if command[1] in movement_adverbs and len(command) == 2:
+            return {
+                "action": command[0],
+                "adv": command[1],
+                "d_obj": None,
+                "prep": None,
+                "i_obj": None,
+                "error": None
+            }
 
     # Filter out action (because it's already set)
     command.pop(0)
