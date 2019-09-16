@@ -19,7 +19,7 @@ class Room:
 
     def remove_item(self, item):
         if item in self.items:
-            if item.obtainable:
+            if "obtainable" in item.tags:
                 self.items.remove(item)
                 return True
             else:

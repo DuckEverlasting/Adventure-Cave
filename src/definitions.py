@@ -17,12 +17,23 @@ from text_style import (
 
 # Declare the items
 item = {
+    "cheese": Item(
+        name=item_text("cheese"),
+        long_name=f"a hunk of {item_text('cheese')}",
+        desc=desc_text(
+            "It is a hunk of cheese. Looks all right."
+        ),
+        weight=0.25,
+        tags=["obtainable", "food"]
+    ),
     "sword": Item(
         name=item_text("sword"),
         long_name=f"a {item_text('sword')}",
         desc=desc_text(
             "This sword has seen better days, but it's probably got one or two good swings left in it."
         ),
+        weight=3,
+        tags=["obtainable"]
     ),
     "lantern": Light_Source(
         name=item_text("lantern"),
@@ -30,11 +41,15 @@ item = {
         desc=desc_text(
             "The lantern is unlit. It has fuel though; you imagine you could get it lit if you had some matches."
         ),
+        weight=1,
+        tags=["obtainable"]
     ),
     "rope": Item(
         name=item_text("rope"),
         long_name=f"some {item_text('rope')}",
         desc=desc_text("Good, sturdy rope, about 50 feet long."),
+        weight=2,
+        tags=["obtainable"]
     ),
     "goblin_corpse": Item(
         name=item_text("goblin corpse"),
@@ -42,7 +57,7 @@ item = {
         desc=desc_text(
             f"It's a dead goblin. You turn it over, looking for valuables, but all you can find is a\ncrumpled {item_in_desc_text('matchbook')}, which falls to the floor next to the corpse."
         ),
-        obtainable=False,
+        tags=["corpse"]
     ),
     "matchbook": Item(
         name=item_text("matchbook"),
@@ -50,14 +65,15 @@ item = {
         desc=desc_text(
             "At first glance, the crumpled matchbook appears to be empty, but looking closer,\nyou see it still has a few matches inside."
         ),
+        weight=0.1,
+        tags=["obtainable"]
     ),
     "lever": Item(
         name=item_text("lever"),
         long_name=f"a {item_text('lever')} jutting from the cliffside",
         desc=desc_text(
             "It looks close enough to reach. Your fingers twitch. You never could resist a good lever."
-        ),
-        obtainable=False,
+        )
     ),
     "amulet_of_yendor": Item(
         name=item_text("Amulet of Yendor"),
@@ -65,6 +81,8 @@ item = {
         desc=desc_text(
             "This amulet is said to contain unimaginable power."
         ),
+        weight=0.5,
+        tags=["obtainable"]
     ),
 }
 
@@ -136,13 +154,21 @@ mob = {
         desc = desc_text(
             f"The {mob_in_desc_text('goblin')} is eyeing you warily and shuffling his weight from one foot to the other.\nA crude knife dangles from his belt."
         ),
-        enter_text = f"A {mob_text('goblin')} shuffles into the room. At the sight of you, he gives a squeal of surprise and bares his teeth.",
-        exit_text = f"The {mob_text('goblin')} skitters out of the room, heading ",
-        idle_text = (
-            f"The {mob_text('goblin')} grumbles nervously about how crowded the cave has gotten lately.",
-            f"The {mob_text('goblin')} pulls out a knife, then thinks better of it and puts the knife back.",
-            f"The {mob_text('goblin')} is momentarily transfixed by a rash on his elbow.",
-        ),
+        text = {
+            "enter": f"A {mob_text('goblin')} shuffles into the room. At the sight of you, he gives a squeal of surprise and bares his teeth.",
+            "exit": f"The {mob_text('goblin')} skitters out of the room, heading ",
+            "idle": (
+                f"The {mob_text('goblin')} grumbles nervously about how crowded the cave has gotten lately.",
+                f"The {mob_text('goblin')} pulls out a knife, then thinks better of it and puts the knife back.",
+                f"The {mob_text('goblin')} is momentarily transfixed by a rash on his elbow.",
+            )
+        },
+        stats = {
+            "health": 10,
+            "strength": 10,
+            "accuracy": 10,
+            "evasion": 10
+        },
         init_loc = room["foyer"],
     )
 }
@@ -167,7 +193,8 @@ action = {
     "inventory": Action(
         name = "inventory",
         grammar = {
-
+            "d_obj_prohibited": True,
+            "i_obj_prohibited": True,
         },
         run = run_inventory
     ),
@@ -220,6 +247,7 @@ action = {
         name = "attack",
         grammar = {
             "d_obj_required": True,
+            "i_obj_required": True,
             "preps_accepted": ("with", "using"),
         },
         run = run_attack
@@ -235,7 +263,7 @@ action = {
 }
 
 # Declare the player
-player = Player(init_loc = room["outside"])
+player = Player(init_loc = room["outside"], init_items=[item["cheese"]])
 
 # Link rooms together
 room["outside"].n_to = (room["foyer"], "You step into the mouth of the cave.")
@@ -299,7 +327,7 @@ def use_rope():
         item["rope"].desc = desc_text(
             "The rope looks pretty sturdy. It will probably hold your weight. Probably."
         )
-        item["rope"].obtainable = False
+        item["rope"].tags.remove("obtainable")
 
         def use_from_env_rope():
             player.move("d")
@@ -355,12 +383,6 @@ def on_look_goblin_corpse():
     delattr(item["goblin_corpse"], "on_look")
 
 item["goblin_corpse"].on_look = on_look_goblin_corpse
-
-def eat_goblin_corpse():
-    print("What? No. That's just... no.\n\nGross.\n")
-    return False
-
-item["goblin_corpse"].eat = eat_goblin_corpse
 
 # lever
 def use_from_env_lever():

@@ -3,13 +3,17 @@ from text_style import dir_text
 
 
 class Mob:
-    def __init__(self, name, long_name, desc, enter_text, exit_text, idle_text, init_loc):
+    def __init__(self, name, long_name, desc, text, stats, init_loc, items=[]):
         self.name = name
         self.long_name = long_name
         self.desc = desc
-        self.enter_text = enter_text
-        self.exit_text = exit_text
-        self.idle_text = idle_text
+        self.text = text
+        self.health = stats["health"]
+        self.strength = stats["strength"]
+        self.accuracy = stats["accuracy"]
+        self.evasion = stats["evasion"]
+        self.items = items
+        self.status = "normal"
         self.loc = init_loc
         self.prev_loc = None
         self.alive = True

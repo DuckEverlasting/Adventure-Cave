@@ -14,8 +14,8 @@ from text_style import (
     dir_text,
     dir_in_desc_text,
 )
-from logic import parse_list, parse_command
-from definitions import item, room, mob, player
+from logic import parse_list, parse_command, action_synonyms
+from definitions import item, room, mob, player, action
 
 # Clear terminal
 os.system("cls" if os.name == "nt" else "clear")
@@ -27,8 +27,7 @@ color_init()
 # Main loop
 #
 
-game_on = True
-
+end_game = False
 time_passed = False
 player_moved = False
 
@@ -68,7 +67,7 @@ os.system("cls" if os.name == "nt" else "clear")
 pause()
 
 # Start of loop
-while game_on:
+while not end_game:
 
     # Before player's turn
     if time_passed:
@@ -77,16 +76,16 @@ while game_on:
                 continue
             result = mob[i].moveRand()
             if result and mob[i].loc == player.loc:
-                print(f"{mob[i].enter_text}\n")
+                print(f"{mob[i].text['enter']}\n")
                 # Brief pause included for flavor
                 pause()
             elif mob[i].loc == player.loc and player_moved == False:
-                idle_text = random.choice(mob[i].idle_text)
+                idle_text = random.choice(mob[i].text["idle"])
                 print(f"{idle_text}\n")
                 # Brief pause included for flavor
                 pause()
             elif result and mob[i].prev_loc == player.loc and player_moved == False:
-                print(f"{mob[i].exit_text}{result}\n")
+                print(f"{mob[i].text['exit']}{result}\n")
                 # Brief pause included for flavor
                 pause()
 
@@ -125,143 +124,51 @@ while game_on:
 
     # Parse command
     command = parse_command(command)
-    action = command["action"]
+    act = command["act"]
     adv = command["adv"]
     d_obj = command["d_obj"]
     prep = command["prep"]
     i_obj = command["i_obj"]
     error = command["error"]
 
+    # Check for synonyms in actions. This check happens here as opposed
+    # to in "logic" to preserve the parsed command for actions where
+    # the wording is important. 
+    if act in action_synonyms:
+        act = action_synonyms[act]
+
     # Resolve player action
     print()
 
     if error:
-    # NO ARG NEEDED
         print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))
 
-    elif action == "help":
-    # NO ARG NEEDED
-        print("==============\nBasic Controls\n==============")
-        print(
-            f"Move around: \"{item_text('n')}orth\", \"{item_text('s')}outh\", \"{item_text('e')}ast\", \"{item_text('w')}est\", \"down\", \"up\""
+    if act in action:
+        result = action[act].run(
+            command = command,
+            player = player,
+            item = item,
+            mob = mob
         )
-        print(
-            f"Interact with things: \"{item_text('l')}ook\", \"{item_text('g')}et\", \"{item_text('d')}rop\", \"{item_text('u')}se\""
-        )
-        print(f"Check inventory: \"{item_text('i')}nv\"")
-        print(f"Do nothing: wait")
-        print(f"Exit game: \"{item_text('q')}uit\"")
-        print()
 
-    elif action == "go":
-    # NEED: command, player
-        dir_letter = command["adv"][0]
-        result = player.move(dir_letter)
-        if result:
-            time_passed = True
-            player_moved = True
-
-    elif action == "inventory":
-    # NEED: player
-        if len(player.items) > 0:
-            print(f"You have {parse_list(player.items)} in your inventory.\n")
-        else:
-            print("You have no items in your inventory.\n")
-
-    elif action == "wait":
-    # NO ARG NEEDED
-        time_passed = True
-
-    elif action == "quit":
-    # NO ARG NEEDED
-        confirm = input('Are you sure? (Type "y" to confirm)\n> ')
-        if confirm in ("y", "yes"):
-            print("\nExiting game...\n")
-            pause(.5)
-            game_on = False
-        else:
-            print()
-
-    elif action == "look":
-    # NEED: command, player, item, mob
-        if not d_obj:
-            print("What would you like to look at?\n")
-        elif player.loc.dark and player.light_check() == False:
-            print("Too dark for that right now.\n")
-        elif d_obj in item:
-            result = player.look_item(item[d_obj])
-            if result:
+        if result != None:  
+            if "time_passed" in result:
                 time_passed = True
-        elif d_obj in mob:
-            result = player.look_mob(mob[d_obj])
-            if result:
-                time_passed = True
-        else:
-            print("There's nothing here by that name.\n")
-
-    elif action == "get":
-    # NEED: command, player, item
-        if not d_obj:
-            print(f"What would you like to get?\n")
-        elif d_obj in item:
-            result = player.get_item(item[d_obj])
-            if result:
-                time_passed = True
-        else:
-            print("There's nothing here by that name.\n")
-
-    elif action in ("drop", "leave"):
-    # NEED: command, player, item
-        if not d_obj:
-            print(f"What would you like to drop?\n")
-        elif d_obj in item:
-            result = player.drop_item(item[d_obj])
-            if result:
-                time_passed = True
-        else:
-            print("You don't have one of those in your inventory\n")
-
-    elif action == "use":
-    # NEED: command, player, item
-        if not d_obj:
-            print(f"What would you like to use?\n")
-        elif d_obj in item:
-            result = player.use_item(item[d_obj])
-            if result:
-                time_passed = True
-        else:
-            print("There's nothing here by that name.\n")
-
-    elif action == "wield" and d_obj == "sword":
-    # NEED: command, player, item
-        result = player.use_item(item[d_obj])
-        if result:
-            time_passed = True
-
-    elif action == "eat":
-    # NEED: command, player, item, mob
-        if not d_obj:
-            print(f"What would you like to eat?\n")
-        elif d_obj in item:
-            result = player.eat_item(item[d_obj])
-            if result:
-                time_passed = True
-        elif d_obj in mob:
-            if mob[d_obj].loc == player.loc:
-                print(f"That's... not food.\n")
-            else:
-                print("There's nothing here by that name.\n")
-        else:
-            print("There's nothing here by that name.\n")
-
+            if "player_moved" in result:
+                player_moved = True
+            if "end_game" in result:
+                end_game = True
+        
     else:
         print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))
+        
 
     # Brief pause included for flavor
     pause()
 
     if item["amulet_of_yendor"] in player.items:
-        game_on = False
+        # set game to end after this loop
+        end_game = True
         print("You've won the game! Congratulations!!!")
         pause()
         print(
@@ -279,6 +186,5 @@ while game_on:
 """
             )
         )
-
         pause(3)
 
