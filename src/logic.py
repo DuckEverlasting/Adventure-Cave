@@ -1,5 +1,4 @@
 multi_word_replace = {
-    "look at": "look_at",
     "pick up": "pick_up",
     "put down": "put_down",
     "attack with": "attack_with",
@@ -58,13 +57,23 @@ prepositions = (
     "out_of"
 )
 
+movement_adverbs = (
+    "north",
+    "south",
+    "east",
+    "west",
+    "up",
+    "down",
+    "in",
+    "out",
+)
+
 action_synonyms = {
     "examine": "look",
     "inspect": "look",
     "take": "get",
     "leave": "drop",
     "swing": "wield",
-    "look_at": "look",
     "pick_up": "get",
     "put_down": "drop",
     "attack_with": "wield",
@@ -75,7 +84,7 @@ action_synonyms = {
 # Function to help interpret player commands
 def parse_command(command):
     error = {
-                "action": None,
+                "act": None,
                 "adv": None,
                 "d_obj": None,
                 "prep": None,
@@ -104,7 +113,7 @@ def parse_command(command):
    
     # Declare return object, set action
     result = {
-        "action": command[0],
+        "act": command[0],
         "adv": None,
         "d_obj": None,
         "prep": None,
@@ -113,15 +122,27 @@ def parse_command(command):
     }
 
     # Check for movement shortcuts
-    if command in (["north"], ["south"], ["east"], ["west"], ["up"], ["down"], ["in"], ["out"]):
+    if len(command) == 1 and command[0] in movement_adverbs:
         return {
-            "action": "go",
+            "act": "go",
             "adv": command[0],
             "d_obj": None,
             "prep": None,
             "i_obj": None,
             "error": None
         }
+
+    # Check for command "go" and synonyms
+    if command[0] in (["go", "walk", "travel"]):
+        if len(command) == 2 and command[1] in movement_adverbs:
+            return {
+                "act": command[0],
+                "adv": command[1],
+                "d_obj": None,
+                "prep": None,
+                "i_obj": None,
+                "error": None
+            }
 
     # Filter out action (because it's already set)
     command.pop(0)
@@ -130,10 +151,13 @@ def parse_command(command):
     prep = None
     for i in range(len(command)):
         if command[i] in prepositions:
-            if prep: return error
-            prep = [command[i]]
-            try: i_obj = command[i + 1]
-            except: return error
+            if prep:
+                return error
+            prep = command[i]
+            try:
+                i_obj = command[i + 1]
+            except:
+                return error
 
     # Filter out preposition, indirect object
     if prep:
@@ -144,14 +168,18 @@ def parse_command(command):
     if len(command) > 1:
         return error
     
-    try: result["d_obj"] = command[0]
-    except: pass
-
-    try: result["prep"] = prep
-    except: pass
-
-    try: result["i_obj"] = i_obj
-    except: pass
+    try:
+        result["d_obj"] = command[0]
+    except:
+        pass
+    try: 
+        result["prep"] = prep
+    except:
+        pass
+    try: 
+        result["i_obj"] = i_obj
+    except:
+        pass
 
     return result
 
