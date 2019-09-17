@@ -3,7 +3,7 @@ from text_style import dir_text
 
 
 class Mob:
-    def __init__(self, name, long_name, desc, text, stats, init_loc, items=[]):
+    def __init__(self, name, long_name, desc, text, stats, init_loc, init_att, items=[]):
         self.name = name
         self.long_name = long_name
         self.desc = desc
@@ -16,6 +16,7 @@ class Mob:
         self.status = "normal"
         self.loc = init_loc
         self.prev_loc = None
+        self.attitude = init_att
         self.alive = True
 
     def __str__(self):
@@ -51,5 +52,7 @@ class Mob:
         pass
 
     def kill(self):
+        for i in self.items:
+            self.loc.add_item(i)
         self.alive = False
         self.loc = None

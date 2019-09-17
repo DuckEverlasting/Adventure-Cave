@@ -1,4 +1,5 @@
 from text_style import error_text
+import random
 
 
 class Player:
@@ -7,8 +8,8 @@ class Player:
         self.items = init_items
         self.health = 10
         self.strength = 10
-        self.accuracy = 10
-        self.evasion = 10
+        self.accuracy = .9
+        self.evasion = .3
         self.status = "normal"
         self.load = sum(i.weight for i in self.items)
         self.max_load = 10
@@ -100,9 +101,21 @@ class Player:
             print("There's nothing here by that name.\n")
             return False
     
-    def attack_mob(self, item, target):
-        pass
-    
+    def attack_mob(self, weapon, target):
+        target.change_att("hostile")
+        print(random.choice(weapon.attack_text) + "\n")
+        attack_chance = self.accuracy * weapon.accuracy
+        dodge_chance = target.evasion
+        if random.random() < attack_chance * (1 - dodge_chance):
+            print(f"{random.choice(target.text['dodge_fail'])}\n")
+        else:
+            target.health -= (self.strength / 10 ) * weapon.damage
+            if target.health > 0:
+                print(f"{random.choice(target.text['dodge_success'])}\n")
+            else:
+                print(random.choice(target.text["dead"]) + "\n")
+                target.kill()
+
     def eat_item(self, item):
         if item in self.items:
             return item.eat(self)

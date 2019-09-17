@@ -1,6 +1,6 @@
 from room import Room
 from player import Player
-from item import Item, Light_Source
+from item import Item, Light_Source, Weapon
 from mob import Mob
 from action import Action
 from action_run import *
@@ -26,13 +26,35 @@ item = {
         weight=0.25,
         tags=["obtainable", "food"]
     ),
-    "sword": Item(
+    "sword": Weapon(
         name=item_text("sword"),
         long_name=f"a {item_text('sword')}",
         desc=desc_text(
             "This sword has seen better days, but it's probably got one or two good swings left in it."
         ),
         weight=3,
+        stats={
+            "damage": 3,
+            "accuracy": 0.8
+        },
+        attack_text=(
+            f"You swing wildly with your {item_text('sword')}.",
+        ),
+        tags=["obtainable"]
+    ),
+    "fists": Weapon(
+        name=item_text("fists"),
+        long_name=f"your {item_text('fists')}",
+        desc=None,
+        stats={
+            "damage": 1,
+            "accuracy": 0.9
+        },
+        attack_text=(
+            f"You pretend you're a boxer and attempt a left hook with your {item_text('fists')}.",
+            f"You leap forward, putting your {item_text('fists')} in front of you in the hope that they do some damage.",
+            f"You swing your {item_text('fists')} around in your best imitation of a helicopter."
+        ),
         tags=["obtainable"]
     ),
     "lantern": Light_Source(
@@ -155,21 +177,42 @@ mob = {
             f"The {mob_in_desc_text('goblin')} is eyeing you warily and shuffling his weight from one foot to the other.\nA crude knife dangles from his belt."
         ),
         text = {
-            "enter": f"A {mob_text('goblin')} shuffles into the room. At the sight of you, he gives a squeal of surprise and bares his teeth.",
-            "exit": f"The {mob_text('goblin')} skitters out of the room, heading ",
+            "enter": (
+                f"A {mob_text('goblin')} shuffles into the room. At the sight of you, he gives a squeal of surprise and bares his teeth.",
+            ),
+            "exit": (
+                f"The {mob_text('goblin')} skitters out of the room, heading ",
+            ),
             "idle": (
                 f"The {mob_text('goblin')} grumbles nervously about how crowded the cave has gotten lately.",
                 f"The {mob_text('goblin')} pulls out a knife, then thinks better of it and puts the knife back.",
                 f"The {mob_text('goblin')} is momentarily transfixed by a rash on his elbow.",
+            ),
+            "dodge_success": (
+                f"The {mob_text('goblin')} leaps back, emotionally scarred by your violent outburst but physically unharmed.",
+            ),
+            "dodge_fail": (
+                f"The {mob_text('goblin')} staggers back, wounded physically (and emotionally).",
+            ),
+            "dead": (
+                f"The {mob_text('goblin')} cries out in shock as your attack connects. He gives you a baleful glare that fades into a look of weary resignation as he slumps to the ground, dead.",
+            ),
+            "attack_success": (
+                f"The {mob_text('goblin')} whips its knife out towards you in a desparate arc. It carves into you.",
+            ),
+            "attack_fail": (
+                f"The {mob_text('goblin')} whips its knife out towards you in a desparate arc. You dodge nimbly out of the way.",
             )
         },
         stats = {
             "health": 10,
             "strength": 10,
-            "accuracy": 10,
-            "evasion": 10
+            "accuracy": .75,
+            "evasion": .25
         },
         init_loc = room["foyer"],
+        init_att = "neutral",
+        items=(item["goblin_corpse"])
     )
 }
 
@@ -247,7 +290,6 @@ action = {
         name = "attack",
         grammar = {
             "d_obj_required": True,
-            "i_obj_required": True,
             "preps_accepted": ("with", "using"),
         },
         run = run_attack

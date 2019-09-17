@@ -48,3 +48,12 @@ class Light_Source(Item):
     def __init__(self, name, long_name, desc, weight=None, active=False, tags=[]):
         super().__init__(name, long_name, desc, weight, tags)
         self.active = active
+        self.tags = tags + ["light_source"]
+
+class Weapon(Item):
+    def __init__(self, name, long_name, desc, stats, attack_text, weight=None, tags=[]):
+        super().__init__(name, long_name, desc, weight, tags)
+        self.damage = stats["damage"]
+        self.accuracy = stats["accuracy"]
+        self.attack_text = attack_text
+        self.tags = tags + ["weapon"]

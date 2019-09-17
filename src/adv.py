@@ -76,16 +76,15 @@ while not end_game:
                 continue
             result = mob[i].moveRand()
             if result and mob[i].loc == player.loc:
-                print(f"{mob[i].text['enter']}\n")
+                print(f"{random.choice(mob[i].text['enter'])}\n")
                 # Brief pause included for flavor
                 pause()
             elif mob[i].loc == player.loc and player_moved == False:
-                idle_text = random.choice(mob[i].text["idle"])
-                print(f"{idle_text}\n")
+                print(f"{random.choice(mob[i].text['idle'])}\n")
                 # Brief pause included for flavor
                 pause()
             elif result and mob[i].prev_loc == player.loc and player_moved == False:
-                print(f"{mob[i].text['exit']}{result}\n")
+                print(f"{random.choice(mob[i].text['exit'])}{result}\n")
                 # Brief pause included for flavor
                 pause()
 

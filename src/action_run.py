@@ -103,23 +103,39 @@ def run_use(command, player, item, mob):
 def run_attack(command, player, item, mob):
     d_obj = command["d_obj"]
     i_obj = command["i_obj"]
+    
     if d_obj in mob:
         if mob[d_obj].loc == player.loc:
-            if i_obj in player.items:
-                pass
-            else:
+            if not i_obj:
+                weapons = [i for i in player.items if "weapon" in i.tags] + [item["fists"]]
+                weapon_string = "Attack with what?"
+                for i in range(len(weapons)):
+                    weapon_string += f"\n{i + 1}:  {item_text(weapons[i].name)}"
+                print(weapon_string)
+                selection = input('\n> ')
+                try:
+                    selection = int(selection) - 1
+                    i_obj = weapons[selection]
+                except:
+                    return
+            elif not item[i_obj] in player.items:
                 if i_obj[0] in ["a", "e", "i", "o", "u"]:
-                    print(f"You don't have an {i_obj} on you.")
+                    print(f"You don't have an {i_obj} on you.\n")
+                    return
                 else:
-                    print(f"You don't have a {i_obj} on you.") 
+                    print(f"You don't have a {i_obj} on you.\n")
+                    return
+            elif "weapon" not in item[i_obj].tags:
+                print("That's not a weapon.\n")
+                return
+            else:
+                i_obj = item[i_obj]
+            player.attack_mob(i_obj, mob[d_obj])
+            return {"time_passed": True}                 
         else:
             print(f"There's no {d_obj} here.\n")
-        
-        result = player.attack_mob(item[d_obj], i_obj)
-        if result:
-            return {"time_passed": True}
     else:
-        print("There's nothing here by that name.\n")
+        print(f"There's no {d_obj} here.\n")
 
 def run_eat(command, player, item, mob):
     d_obj = command["d_obj"]
