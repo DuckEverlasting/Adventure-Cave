@@ -1,10 +1,11 @@
-from text_style import error_text
+from constants import text_style
 import random
 
 
 class Player:
     def __init__(self, init_loc, init_items=[]):
         self.loc = init_loc
+        self.prev_loc = None
         self.items = init_items
         self.health = 10
         self.strength = 10
@@ -31,11 +32,12 @@ class Player:
     def move(self, dir):
         if hasattr(self.loc, f"{dir}_to"):
             dest = getattr(self.loc, f"{dir}_to")
+            self.prev_loc = self.loc
             self.loc = dest[0]
             print(f"{dest[1]}\n")
             return True
         else:
-            print(error_text("ERROR: MOVEMENT NOT ALLOWED\n"))
+            print(text_style['error']("ERROR: MOVEMENT NOT ALLOWED\n"))
             return False
 
     def look_item(self, item):

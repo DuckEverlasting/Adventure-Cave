@@ -1,21 +1,11 @@
-import time
 import random
 from colorama import init as color_init
 import os
 
-from text_style import (
-    title_text,
-    error_text,
-    desc_text,
-    item_text,
-    item_in_desc_text,
-    mob_text,
-    mob_in_desc_text,
-    dir_text,
-    dir_in_desc_text,
-)
+from constants import text_style, pause
 from logic import parse_list, parse_command, action_synonyms
 from definitions import item, room, mob, player, action
+from mob_act import mob_act
 
 # Clear terminal
 os.system("cls" if os.name == "nt" else "clear")
@@ -32,13 +22,9 @@ time_passed = False
 player_moved = False
 
 
-def pause(num=0.75):
-    time.sleep(num)
-
-
 # Opening sequence
 print(
-    title_text(
+    text_style['title'](
         """
 █‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾█
 █    █████╗ ██████╗ ██╗   ██╗███████╗███╗   ██╗████████╗██╗   ██╗██████╗ ███████╗   █
@@ -72,21 +58,8 @@ while not end_game:
     # Before player's turn
     if time_passed:
         for i in mob:
-            if mob[i].alive == False:
-                continue
-            result = mob[i].moveRand()
-            if result and mob[i].loc == player.loc:
-                print(f"{random.choice(mob[i].text['enter'])}\n")
-                # Brief pause included for flavor
-                pause()
-            elif mob[i].loc == player.loc and player_moved == False:
-                print(f"{random.choice(mob[i].text['idle'])}\n")
-                # Brief pause included for flavor
-                pause()
-            elif result and mob[i].prev_loc == player.loc and player_moved == False:
-                print(f"{random.choice(mob[i].text['exit'])}{result}\n")
-                # Brief pause included for flavor
-                pause()
+            if mob[i].alive:
+                mob_act(mob[i], player, player_moved)
 
     spacers = ""
     for i in range(len(player.loc.name)):
@@ -140,7 +113,7 @@ while not end_game:
     print()
 
     if error:
-        print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))
+        print(text_style['error']("ERROR: COMMAND NOT RECOGNIZED\n"))
 
     if act in action:
         result = action[act].run(
@@ -159,7 +132,7 @@ while not end_game:
                 end_game = True
         
     else:
-        print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))
+        print(text_style['error']("ERROR: COMMAND NOT RECOGNIZED\n"))
         
 
     # Brief pause included for flavor
@@ -171,7 +144,7 @@ while not end_game:
         print("You've won the game! Congratulations!!!")
         pause()
         print(
-            title_text(
+            text_style['title'](
                 """
 █‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾█
 █     ██████╗  █████╗ ███╗   ███╗███████╗     ██████╗ ██╗   ██╗███████╗██████╗      █
