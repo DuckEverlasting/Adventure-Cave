@@ -124,7 +124,6 @@ class Player:
         
         elif item in self.loc.items:
             return item.eat(self.loc)
-
                 
         else:
             print("There's nothing here by that name.\n")
