@@ -195,18 +195,21 @@ mob = {
                 f"The {mob_text('goblin')} staggers back, wounded physically (and emotionally).",
             ),
             "dead": (
-                f"The {mob_text('goblin')} cries out in shock as your attack connects. He gives you a baleful glare that fades into a look of weary resignation as he slumps to the ground, dead.",
+                f"The {mob_text('goblin')} cries out in shock as your attack connects. He gives you a baleful glare that fades into\na look of weary resignation as he slumps to the ground, dead.",
             ),
             "attack_success": (
                 f"The {mob_text('goblin')} whips its knife out towards you in a desparate arc. It carves into you.",
             ),
             "attack_fail": (
                 f"The {mob_text('goblin')} whips its knife out towards you in a desparate arc. You dodge nimbly out of the way.",
+            ),
+            "kill_player": (
+                f"The {mob_text('goblin')} screams at you and flies forward, plunging it's knife into your chest. You final thought,\nimprobably, is a silent prayer that the {mob_text('goblin')}'s filthy knife doesn't give you an infection.",
             )
         },
         stats = {
             "health": 10,
-            "strength": 10,
+            "damage": 2,
             "accuracy": .75,
             "evasion": .25
         },

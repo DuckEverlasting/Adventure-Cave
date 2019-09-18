@@ -9,7 +9,7 @@ class Mob:
         self.desc = desc
         self.text = text
         self.health = stats["health"]
-        self.strength = stats["strength"]
+        self.damage = stats["damage"]
         self.accuracy = stats["accuracy"]
         self.evasion = stats["evasion"]
         self.items = items
@@ -48,6 +48,19 @@ class Mob:
             self.loc = dest[0]
             return directions[dir_to]
     
+    def attack_player(self, player):
+        attack_chance = self.accuracy
+        dodge_chance = player.evasion
+        if random.random() < attack_chance * (1 - dodge_chance):
+            print(f"{random.choice(self.text['attack_fail'])}\n")
+        else:
+            player.health -= self.damage
+            if player.health > 0:
+                print(f"{random.choice(self.text['attack_success'])}\n")
+            else:
+                print(random.choice(self.text["kill_player"]) + "\n")
+                player.kill()
+
     def on_look(self):
         pass
 
