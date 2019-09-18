@@ -1,19 +1,19 @@
 import time
-from text_style import item_text, error_text
+from constants import text_style
 from logic import parse_list
 
 
 def run_help(command, player, item, mob):
     print("==============\nBasic Controls\n==============")
     print(
-        f"Move around: \"{item_text('n')}orth\", \"{item_text('s')}outh\", \"{item_text('e')}ast\", \"{item_text('w')}est\", \"down\", \"up\""
+        f"Move around: \"{text_style['item']('n')}orth\", \"{text_style['item']('s')}outh\", \"{text_style['item']('e')}ast\", \"{text_style['item']('w')}est\", \"down\", \"up\""
     )
     print(
-        f"Interact with things: \"{item_text('l')}ook\", \"{item_text('g')}et\", \"{item_text('d')}rop\", \"{item_text('u')}se\""
+        f"Interact with things: \"{text_style['item']('l')}ook\", \"{text_style['item']('g')}et\", \"{text_style['item']('d')}rop\", \"{text_style['item']('u')}se\""
     )
-    print(f"Check inventory: \"{item_text('i')}nv\"")
+    print(f"Check inventory: \"{text_style['item']('i')}nv\"")
     print(f"Do nothing: wait")
-    print(f"Exit game: \"{item_text('q')}uit\"")
+    print(f"Exit game: \"{text_style['item']('q')}uit\"")
     print()
 
 def run_go(command, player, item, mob):
@@ -49,11 +49,11 @@ def run_quit(command, player, item, mob):
 def run_look(command, player, item, mob):
     if command["act"] != "look":
         if command["i_obj"]:
-            print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))
+            print(text_style['error']("ERROR: COMMAND NOT RECOGNIZED\n"))
         obj = command["d_obj"]
     else:
         if command["d_obj"]:
-            print(error_text("ERROR: COMMAND NOT RECOGNIZED\n"))
+            print(text_style['error']("ERROR: COMMAND NOT RECOGNIZED\n"))
         obj = command["i_obj"]
     if player.loc.dark and player.light_check() == False:
         print("Too dark for that right now.\n")
@@ -110,7 +110,7 @@ def run_attack(command, player, item, mob):
                 weapons = [i for i in player.items if "weapon" in i.tags] + [item["fists"]]
                 weapon_string = "Attack with what?"
                 for i in range(len(weapons)):
-                    weapon_string += f"\n{i + 1}:  {item_text(weapons[i].name)}"
+                    weapon_string += f"\n{i + 1}:  {text_style['item'](weapons[i].name)}"
                 print(weapon_string)
                 selection = input('\n> ')
                 try:

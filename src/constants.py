@@ -1,5 +1,17 @@
+import time
 from colorama import Fore, Back, Style
 
+text_style = {
+    "title": title_text,
+    "error": error_text,
+    "desc": desc_text,
+    "item": item_text,
+    "item_in_desc": item_in_desc_text,
+    "mob": mob_text,
+    "mob_in_desc": mob_in_desc_text,
+    "dir": dir_text,
+    "dir_in_desc": dir_in_desc_text,
+}
 
 # Set up wrappers for coloring text
 def title_text(string):
@@ -28,3 +40,7 @@ def dir_text(string):
 
 def dir_in_desc_text(string):
     return f"{Fore.MAGENTA}{Style.BRIGHT}{string}{Fore.YELLOW}{Style.BRIGHT}"
+
+    
+def pause(num=0.75):
+    time.sleep(num)

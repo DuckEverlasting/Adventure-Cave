@@ -4,32 +4,24 @@ from item import Item, Light_Source, Weapon
 from mob import Mob
 from action import Action
 from action_run import *
-from text_style import (
-    desc_text,
-    item_text,
-    item_in_desc_text,
-    mob_text,
-    mob_in_desc_text,
-    dir_text,
-    dir_in_desc_text,
-)
+from constants import text_style
 
 
 # Declare the items
 item = {
     "cheese": Item(
-        name=item_text("cheese"),
-        long_name=f"a hunk of {item_text('cheese')}",
-        desc=desc_text(
+        name=text_style['item']("cheese"),
+        long_name=f"a hunk of {text_style['item']('cheese')}",
+        desc=text_style['desc'](
             "It is a hunk of cheese. Looks all right."
         ),
         weight=0.25,
         tags=["obtainable", "food"]
     ),
     "sword": Weapon(
-        name=item_text("sword"),
-        long_name=f"a {item_text('sword')}",
-        desc=desc_text(
+        name=text_style['item']("sword"),
+        long_name=f"a {text_style['item']('sword')}",
+        desc=text_style['desc'](
             "This sword has seen better days, but it's probably got one or two good swings left in it."
         ),
         weight=3,
@@ -38,69 +30,69 @@ item = {
             "accuracy": 0.8
         },
         attack_text=(
-            f"You swing wildly with your {item_text('sword')}.",
+            f"You swing wildly with your {text_style['item']('sword')}.",
         ),
         tags=["obtainable"]
     ),
     "fists": Weapon(
-        name=item_text("fists"),
-        long_name=f"your {item_text('fists')}",
+        name=text_style['item']("fists"),
+        long_name=f"your {text_style['item']('fists')}",
         desc=None,
         stats={
             "damage": 1,
             "accuracy": 0.9
         },
         attack_text=(
-            f"You pretend you're a boxer and attempt a left hook with your {item_text('fists')}.",
-            f"You leap forward, putting your {item_text('fists')} in front of you in the hope that they do some damage.",
-            f"You swing your {item_text('fists')} around in your best imitation of a helicopter."
+            f"You pretend you're a boxer and attempt a left hook with your {text_style['item']('fists')}.",
+            f"You leap forward, putting your {text_style['item']('fists')} in front of you in the hope that they do some damage.",
+            f"You swing your {text_style['item']('fists')} around in your best imitation of a helicopter."
         ),
         tags=["obtainable"]
     ),
     "lantern": Light_Source(
-        name=item_text("lantern"),
-        long_name=f"an extinguished {item_text('lantern')}",
-        desc=desc_text(
+        name=text_style['item']("lantern"),
+        long_name=f"an extinguished {text_style['item']('lantern')}",
+        desc=text_style['desc'](
             "The lantern is unlit. It has fuel though; you imagine you could get it lit if you had some matches."
         ),
         weight=1,
         tags=["obtainable"]
     ),
     "rope": Item(
-        name=item_text("rope"),
-        long_name=f"some {item_text('rope')}",
-        desc=desc_text("Good, sturdy rope, about 50 feet long."),
+        name=text_style['item']("rope"),
+        long_name=f"some {text_style['item']('rope')}",
+        desc=text_style['desc']("Good, sturdy rope, about 50 feet long."),
         weight=2,
         tags=["obtainable"]
     ),
     "goblin_corpse": Item(
-        name=item_text("goblin corpse"),
-        long_name=f"a {item_text('goblin corpse')}",
-        desc=desc_text(
-            f"It's a dead goblin. You turn it over, looking for valuables, but all you can find is a\ncrumpled {item_in_desc_text('matchbook')}, which falls to the floor next to the corpse."
+        name=text_style['item']("goblin corpse"),
+        long_name=f"a {text_style['item']('goblin corpse')}",
+        desc=text_style['desc'](
+            f"It's a dead goblin. You turn it over, looking for valuables, but all you can find is a\ncrumpled {text_style['item_in_desc']('matchbook')}, which falls to the floor next to the corpse."
         ),
         tags=["corpse"]
     ),
     "matchbook": Item(
-        name=item_text("matchbook"),
-        long_name=f"a {item_text('matchbook')}",
-        desc=desc_text(
+        name=text_style['item']("matchbook"),
+        long_name=f"a {text_style['item']('matchbook')}",
+        desc=text_style['desc'](
             "At first glance, the crumpled matchbook appears to be empty, but looking closer,\nyou see it still has a few matches inside."
         ),
         weight=0.1,
         tags=["obtainable"]
     ),
     "lever": Item(
-        name=item_text("lever"),
-        long_name=f"a {item_text('lever')} jutting from the cliffside",
-        desc=desc_text(
+        name=text_style['item']("lever"),
+        long_name=f"a {text_style['item']('lever')} jutting from the cliffside",
+        desc=text_style['desc'](
             "It looks close enough to reach. Your fingers twitch. You never could resist a good lever."
         )
     ),
     "amulet_of_yendor": Item(
-        name=item_text("Amulet of Yendor"),
-        long_name=f"the {item_text('Amulet of Yendor')}",
-        desc=desc_text(
+        name=text_style['item']("Amulet of Yendor"),
+        long_name=f"the {text_style['item']('Amulet of Yendor')}",
+        desc=text_style['desc'](
             "This amulet is said to contain unimaginable power."
         ),
         weight=0.5,
@@ -113,46 +105,46 @@ item = {
 room = {
     "outside": Room(
         name = "Outside Cave Entrance",
-        desc = desc_text(
-            f"{dir_in_desc_text('North')} of you, the cave mouth beckons."
+        desc = text_style['desc'](
+            f"{text_style['dir_in_desc']('North')} of you, the cave mouth beckons."
         ),
         no_mobs = True,
     ),
     "foyer": Room(
         name = "Foyer",
-        desc = desc_text(
-            f"Dim light filters in from the {dir_in_desc_text('south')}. Dusty passages run {dir_in_desc_text('north')} and {dir_in_desc_text('east')}."
+        desc = text_style['desc'](
+            f"Dim light filters in from the {text_style['dir_in_desc']('south')}. Dusty passages run {text_style['dir_in_desc']('north')} and {text_style['dir_in_desc']('east')}."
         ),
         init_items = [item["sword"]],
     ),
     "overlook": Room(
         name = "Grand Overlook",
-        desc = desc_text(
-            f"A steep cliff appears before you, falling into the darkness. Ahead to the {dir_in_desc_text('north')}, a light\nflickers in the distance, but there is no way across the chasm. A passage leads {dir_in_desc_text('south')},\naway from the cliff."
+        desc = text_style['desc'](
+            f"A steep cliff appears before you, falling into the darkness. Ahead to the {text_style['dir_in_desc']('north')}, a light\nflickers in the distance, but there is no way across the chasm. A passage leads {text_style['dir_in_desc']('south')},\naway from the cliff."
         ),
         init_items = [item["rope"]],
     ),
     "narrow": Room(
         name = "Narrow Passage",
-        desc = desc_text(
-            f"The narrow passage bends here from {dir_in_desc_text('west')} to {dir_in_desc_text('north')}. The smell of gold permeates the air."
+        desc = text_style['desc'](
+            f"The narrow passage bends here from {text_style['dir_in_desc']('west')} to {text_style['dir_in_desc']('north')}. The smell of gold permeates the air."
         ),
     ),
     "treasure": Room(
         name = "Treasure Chamber",
-        desc = desc_text(
-            f"You've found the long-lost treasure chamber! Sadly, it has already been completely emptied by\nearlier adventurers. The only exit is to the {dir_in_desc_text('south')}."
+        desc = text_style['desc'](
+            f"You've found the long-lost treasure chamber! Sadly, it has already been completely emptied by\nearlier adventurers. The only exit is to the {text_style['dir_in_desc']('south')}."
         ),
         init_items = [item["lantern"]],
     ),
     "chasm": Room(
         name = "Over The Edge",
-        desc = desc_text(
-            f"You find yourself suspended over a dark chasm, at the end of a rope that was clearly not\nlong enough for this job. Glancing about, you see a {item_in_desc_text('lever')} jutting out from the wall, half hidden.\nThe rope leads back {dir_in_desc_text('up')}."
+        desc = text_style['desc'](
+            f"You find yourself suspended over a dark chasm, at the end of a rope that was clearly not\nlong enough for this job. Glancing about, you see a {text_style['item_in_desc']('lever')} jutting out from the wall, half hidden.\nThe rope leads back {text_style['dir_in_desc']('up')}."
         ),
         dark = True,
-        dark_desc = desc_text(
-            f"You find yourself suspended over a dark chasm, at the end of a rope that was clearly not\nlong enough for this job. It is dark. You can't see a thing. You are likely to be eaten by a grue.\nThe rope leads back {dir_in_desc_text('up')}."
+        dark_desc = text_style['desc'](
+            f"You find yourself suspended over a dark chasm, at the end of a rope that was clearly not\nlong enough for this job. It is dark. You can't see a thing. You are likely to be eaten by a grue.\nThe rope leads back {text_style['dir_in_desc']('up')}."
         ),
         no_mobs = True,
         no_drop = True,
@@ -160,8 +152,8 @@ room = {
     ),
     "final": Room(
         name = "Across the Chasm",
-        desc = desc_text(
-            f"You find a small, elaborately decorated room. Sunlight streams down a hole in the ceiling high\nabove you, illuminating an altar upon which sits the fabled {item_in_desc_text('Amulet of Yendor')}.\nTo the {dir_in_desc_text('south')}, a bridge leads back the way you came."
+        desc = text_style['desc'](
+            f"You find a small, elaborately decorated room. Sunlight streams down a hole in the ceiling high\nabove you, illuminating an altar upon which sits the fabled {text_style['item_in_desc']('Amulet of Yendor')}.\nTo the {text_style['dir_in_desc']('south')}, a bridge leads back the way you came."
         ),
         init_items=[item["amulet_of_yendor"]]
     ),
@@ -171,34 +163,34 @@ room = {
 # Declare the mobs
 mob = {
     "goblin": Mob(
-        name = mob_text("goblin"),
-        long_name = f"a {mob_text('goblin')}",
-        desc = desc_text(
-            f"The {mob_in_desc_text('goblin')} is eyeing you warily and shuffling his weight from one foot to the other.\nA crude knife dangles from his belt."
+        name = text_style['mob']("goblin"),
+        long_name = f"a {text_style['mob']('goblin')}",
+        desc = text_style['desc'](
+            f"The {text_style['mob_in_desc']('goblin')} is eyeing you warily and shuffling his weight from one foot to the other.\nA crude knife dangles from his belt."
         ),
         text = {
             "enter": (
-                f"A {mob_text('goblin')} shuffles into the room. At the sight of you, he gives a squeal of surprise and bares his teeth.",
+                f"A {text_style['mob']('goblin')} shuffles into the room. At the sight of you, he gives a squeal of surprise and bares his teeth.",
             ),
             "exit": (
-                f"The {mob_text('goblin')} skitters out of the room, heading ",
+                f"The {text_style['mob']('goblin')} skitters out of the room, heading ",
             ),
             "idle": (
-                f"The {mob_text('goblin')} grumbles nervously about how crowded the cave has gotten lately.",
-                f"The {mob_text('goblin')} pulls out a knife, then thinks better of it and puts the knife back.",
-                f"The {mob_text('goblin')} is momentarily transfixed by a rash on his elbow.",
+                f"The {text_style['mob']('goblin')} grumbles nervously about how crowded the cave has gotten lately.",
+                f"The {text_style['mob']('goblin')} pulls out a knife, then thinks better of it and puts the knife back.",
+                f"The {text_style['mob']('goblin')} is momentarily transfixed by a rash on his elbow.",
             ),
             "dodge_success": (
-                f"The {mob_text('goblin')} leaps back, emotionally scarred by your violent outburst but physically unharmed.",
+                f"The {text_style['mob']('goblin')} leaps back, emotionally scarred by your violent outburst but physically unharmed.",
             ),
             "dodge_fail": (
-                f"The {mob_text('goblin')} staggers back, wounded physically (and emotionally).",
+                f"The {text_style['mob']('goblin')} staggers back, wounded physically (and emotionally).",
             ),
             "dead": (
                 f"The {mob_text('goblin')} cries out in shock as your attack connects. He gives you a baleful glare that fades into\na look of weary resignation as he slumps to the ground, dead.",
             ),
             "attack_success": (
-                f"The {mob_text('goblin')} whips its knife out towards you in a desparate arc. It carves into you.",
+                f"The {text_style['mob']('goblin')} whips its knife out towards you in a desparate arc. It carves into you.",
             ),
             "attack_fail": (
                 f"The {mob_text('goblin')} whips its knife out towards you in a desparate arc. You dodge nimbly out of the way.",
@@ -330,17 +322,17 @@ room["final"].s_to = (room["overlook"], "You go back across the bridge, resistin
 def use_sword():
     if mob["goblin"].loc == player.loc:
         print(
-            f"You swing the {item_text('sword')} wildly at the {mob_text('goblin')}, and somehow manage to connect. He cries out in shock,\nthen gives you a baleful glare that fades into a look of weary resignation as he slumps to the ground.\n"
+            f"You swing the {text_style['item']('sword')} wildly at the {text_style['mob']('goblin')}, and somehow manage to connect. He cries out in shock,\nthen gives you a baleful glare that fades into a look of weary resignation as he slumps to the ground.\n"
         )
         mob["goblin"].kill()
         player.loc.add_item(item["goblin_corpse"])
     else:
         if player.loc.no_drop:
-            print(f"This isn't a great place to mess around with your {item_text('sword')}. You leave it be.")
+            print(f"This isn't a great place to mess around with your {text_style['item']('sword')}. You leave it be.")
             return False
         else:
             print(
-                f"You swing the {item_text('sword')} around wildly. After a few wide arcs, it slips out of your fingers and clatters to the ground.\n"
+                f"You swing the {text_style['item']('sword')} around wildly. After a few wide arcs, it slips out of your fingers and clatters to the ground.\n"
             )
             player.drop_item(item["sword"], quiet = True)
     
@@ -352,15 +344,15 @@ item["sword"].use = use_sword
 def use_rope():
     if player.loc == room["overlook"]:
         print(
-            f"You tie off one end of the {item_text('rope')} to a convenient stalagmite and drop the rest off the cliff.\n"
+            f"You tie off one end of the {text_style['item']('rope')} to a convenient stalagmite and drop the rest off the cliff.\n"
         )
 
         # remove from inventory
         player.drop_item(item["rope"], quiet = True)
 
         # modify the room
-        room["overlook"].desc = desc_text(
-            f"A steep cliff appears before you, falling into the darkness. Ahead to the {dir_in_desc_text('north')}, a light\nflickers in the distance, but there is no way across the chasm. A passage leads {dir_in_desc_text('south')},\naway from the cliff. A tied off rope offers a way {dir_in_desc_text('down')}."
+        room["overlook"].desc = text_style['desc'](
+            f"A steep cliff appears before you, falling into the darkness. Ahead to the {text_style['dir_in_desc']('north')}, a light\nflickers in the distance, but there is no way across the chasm. A passage leads {text_style['dir_in_desc']('south')},\naway from the cliff. A tied off rope offers a way {text_style['dir_in_desc']('down')}."
         )
         room["overlook"].d_to = (
             room["chasm"],
@@ -368,8 +360,8 @@ def use_rope():
         )
 
         # modify the item
-        item["rope"].long_name = f"a tied off length of {item_text('rope')}"
-        item["rope"].desc = desc_text(
+        item["rope"].long_name = f"a tied off length of {text_style['item']('rope')}"
+        item["rope"].desc = text_style['desc'](
             "The rope looks pretty sturdy. It will probably hold your weight. Probably."
         )
         item["rope"].tags.remove("obtainable")
@@ -381,7 +373,7 @@ def use_rope():
         item["rope"].use_from_env = use_from_env_rope
 
     else:
-        print(f"You try to use the {item_text('rope')} as a lasso, and fail miserably.")
+        print(f"You try to use the {text_style['item']('rope')} as a lasso, and fail miserably.")
     
     return True
 
@@ -395,8 +387,8 @@ def use_lantern():
             return False
         else:
             item["lantern"].active = True
-            item["lantern"].long_name = f"a lit {item_text('lantern')}"
-            item["lantern"].desc = f"The {item_text('lantern')} is giving off a warm glow."
+            item["lantern"].long_name = f"a lit {text_style['item']('lantern')}"
+            item["lantern"].desc = f"The {text_style['item']('lantern')} is giving off a warm glow."
             print(f"You strike a match and light the lantern. The room brightens.\n")
             return True
     else:
@@ -433,13 +425,13 @@ item["goblin_corpse"].on_look = on_look_goblin_corpse
 def use_from_env_lever():
     if player.light_check():
         print("You pull the lever. A loud rinding noise echoes through the chasm. You nearly lose your grip but\nmanage to hold on as a bridge lowers from the ceiling of the cave, shuddering into place\nabove you. Looks like you can cross the chasm now. What are the odds that lever would be in this exact\nplace on the cliff side?\n")
-        room["overlook"].desc = desc_text(
-            f"A steep cliff appears before you, falling into the darkness. Ahead to the {dir_in_desc_text('north')}, a narrow bridge\nhas been lowered, leading to a light flickering in the distance. A passage leads {dir_in_desc_text('south')}, away from the cliff.\nA tied off rope offers a way {dir_in_desc_text('down')}."
+        room["overlook"].desc = text_style['desc'](
+            f"A steep cliff appears before you, falling into the darkness. Ahead to the {text_style['dir_in_desc']('north')}, a narrow bridge\nhas been lowered, leading to a light flickering in the distance. A passage leads {text_style['dir_in_desc']('south')}, away from the cliff.\nA tied off rope offers a way {text_style['dir_in_desc']('down')}."
         )
         room["overlook"].n_to = (room["final"], "You carefully walk across the bridge, heading towards the light on the other side.")
         return True
     else:
-        print(f"It's too dark for that right now. Also, how do you know about the {item_text('lever')}, cheater?\n")
+        print(f"It's too dark for that right now. Also, how do you know about the {text_style['item']('lever')}, cheater?\n")
         return False
 
 item["lever"].use_from_env = use_from_env_lever

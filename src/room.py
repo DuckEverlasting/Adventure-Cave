@@ -1,6 +1,3 @@
-from text_style import error_text
-
-
 class Room:
     def __init__(self, name, desc, dark=False, dark_desc="", no_mobs=False, no_drop=False, init_items=[]):
         self.name = name
@@ -26,5 +23,4 @@ class Room:
                 print("You decide to leave it there.\n")
                 return False
         else:
-            
             return False

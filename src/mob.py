@@ -1,5 +1,5 @@
 import random
-from text_style import dir_text
+from constants import text_style
 
 
 class Mob:
@@ -22,20 +22,22 @@ class Mob:
     def __str__(self):
         return self.name
 
-    def move(self, dir):
-        if hasattr(self.loc, f"{dir}_to"):
-            dest = getattr(self.loc, f"{dir}_to")
-            self.loc = dest[0]
-            return True
-        else:
-            return False
+    def move(self, dir=None, room=None):
+        if dir:
+            if hasattr(self.loc, f"{dir}_to"):
+                dest = getattr(self.loc, f"{dir}_to")
+                self.loc = dest[0]
+        elif room:
+            if not room.no_mobs:
+                self.loc = room
+
     
     def moveRand(self):
         directions = {
-            "n_to": dir_text("north"),
-            "s_to": dir_text("south"),
-            "e_to": dir_text("east"),
-            "w_to": dir_text("west")
+            "n_to": text_style['dir']("north"),
+            "s_to": text_style['dir']("south"),
+            "e_to": text_style['dir']("east"),
+            "w_to": text_style['dir']("west")
         }
 
         if random.randint(0, 2) != 0:
