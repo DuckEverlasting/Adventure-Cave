@@ -104,6 +104,7 @@ item = {
 # Declare the rooms
 room = {
     "outside": Room(
+        slug="outside",
         name = "Outside Cave Entrance",
         desc = text_style['desc'](
             f"{text_style['dir_in_desc']('North')} of you, the cave mouth beckons."
@@ -111,6 +112,7 @@ room = {
         no_mobs = True,
     ),
     "foyer": Room(
+        slug="foyer",
         name = "Foyer",
         desc = text_style['desc'](
             f"Dim light filters in from the {text_style['dir_in_desc']('south')}. Dusty passages run {text_style['dir_in_desc']('north')} and {text_style['dir_in_desc']('east')}."
@@ -118,6 +120,7 @@ room = {
         init_items = [item["sword"]],
     ),
     "overlook": Room(
+        slug="overlook",
         name = "Grand Overlook",
         desc = text_style['desc'](
             f"A steep cliff appears before you, falling into the darkness. Ahead to the {text_style['dir_in_desc']('north')}, a light\nflickers in the distance, but there is no way across the chasm. A passage leads {text_style['dir_in_desc']('south')},\naway from the cliff."
@@ -125,12 +128,14 @@ room = {
         init_items = [item["rope"]],
     ),
     "narrow": Room(
+        slug="narrow",
         name = "Narrow Passage",
         desc = text_style['desc'](
             f"The narrow passage bends here from {text_style['dir_in_desc']('west')} to {text_style['dir_in_desc']('north')}. The smell of gold permeates the air."
         ),
     ),
     "treasure": Room(
+        slug="treasure",
         name = "Treasure Chamber",
         desc = text_style['desc'](
             f"You've found the long-lost treasure chamber! Sadly, it has already been completely emptied by\nearlier adventurers. The only exit is to the {text_style['dir_in_desc']('south')}."
@@ -138,6 +143,7 @@ room = {
         init_items = [item["lantern"]],
     ),
     "chasm": Room(
+        slug="chasm",
         name = "Over The Edge",
         desc = text_style['desc'](
             f"You find yourself suspended over a dark chasm, at the end of a rope that was clearly not\nlong enough for this job. Glancing about, you see a {text_style['item_in_desc']('lever')} jutting out from the wall, half hidden.\nThe rope leads back {text_style['dir_in_desc']('up')}."
@@ -151,6 +157,7 @@ room = {
         init_items=[item["lever"]]
     ),
     "final": Room(
+        slug="final",
         name = "Across the Chasm",
         desc = text_style['desc'](
             f"You find a small, elaborately decorated room. Sunlight streams down a hole in the ceiling high\nabove you, illuminating an altar upon which sits the fabled {text_style['item_in_desc']('Amulet of Yendor')}.\nTo the {text_style['dir_in_desc']('south')}, a bridge leads back the way you came."
@@ -187,16 +194,16 @@ mob = {
                 f"The {text_style['mob']('goblin')} staggers back, wounded physically (and emotionally).",
             ),
             "dead": (
-                f"The {mob_text('goblin')} cries out in shock as your attack connects. He gives you a baleful glare that fades into\na look of weary resignation as he slumps to the ground, dead.",
+                f"The {text_style['mob']('goblin')} cries out in shock as your attack connects. He gives you a baleful glare that fades into\na look of weary resignation as he slumps to the ground, dead.",
             ),
             "attack_success": (
                 f"The {text_style['mob']('goblin')} whips its knife out towards you in a desparate arc. It carves into you.",
             ),
             "attack_fail": (
-                f"The {mob_text('goblin')} whips its knife out towards you in a desparate arc. You dodge nimbly out of the way.",
+                f"The {text_style['mob']('goblin')} whips its knife out towards you in a desparate arc. You dodge nimbly out of the way.",
             ),
             "kill_player": (
-                f"The {mob_text('goblin')} screams at you and flies forward, plunging it's knife into your chest. You final thought,\nimprobably, is a silent prayer that the {mob_text('goblin')}'s filthy knife doesn't give you an infection.",
+                f"The {text_style['mob']('goblin')} screams at you and flies forward, plunging it's knife into your chest. You final thought,\nimprobably, is a silent prayer that the {text_style['mob']('goblin')}'s filthy knife doesn't give you an infection.",
             )
         },
         stats = {
@@ -320,22 +327,15 @@ room["final"].s_to = (room["overlook"], "You go back across the bridge, resistin
 
 # sword
 def use_sword():
-    if mob["goblin"].loc == player.loc:
-        print(
-            f"You swing the {text_style['item']('sword')} wildly at the {text_style['mob']('goblin')}, and somehow manage to connect. He cries out in shock,\nthen gives you a baleful glare that fades into a look of weary resignation as he slumps to the ground.\n"
-        )
-        mob["goblin"].kill()
-        player.loc.add_item(item["goblin_corpse"])
+    if player.loc.no_drop:
+        print(f"This isn't a great place to mess around with your {text_style['item']('sword')}. You leave it be.")
+        return False
     else:
-        if player.loc.no_drop:
-            print(f"This isn't a great place to mess around with your {text_style['item']('sword')}. You leave it be.")
-            return False
-        else:
-            print(
-                f"You swing the {text_style['item']('sword')} around wildly. After a few wide arcs, it slips out of your fingers and clatters to the ground.\n"
-            )
-            player.drop_item(item["sword"], quiet = True)
-    
+        print(
+            f"You swing the {text_style['item']('sword')} around wildly. After a few wide arcs, it slips out of your fingers and clatters to the ground.\n"
+        )
+        player.drop_item(item["sword"], quiet = True)
+
     return True
 
 item["sword"].use = use_sword

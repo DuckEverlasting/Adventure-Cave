@@ -49,7 +49,7 @@ class Mob:
             self.prev_loc = self.loc
             self.loc = dest[0]
             return directions[dir_to]
-    
+
     def attack_player(self, player):
         attack_chance = self.accuracy
         dodge_chance = player.evasion

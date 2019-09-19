@@ -19,12 +19,12 @@ class Player:
         light_source = False
         for i in self.items:
             try:
-                if i.active: light_source = True
+                if i.lit: light_source = True
             except:
                 pass
         for i in self.loc.items:
             try:
-                if i.active: light_source = True
+                if i.lit: light_source = True
             except:
                 pass
         return light_source
@@ -104,7 +104,7 @@ class Player:
             return False
     
     def attack_mob(self, weapon, target):
-        target.change_att("hostile")
+        target.attitude = "hostile"
         print(random.choice(weapon.attack_text) + "\n")
         attack_chance = self.accuracy * weapon.accuracy
         dodge_chance = target.evasion
@@ -128,3 +128,6 @@ class Player:
         else:
             print("There's nothing here by that name.\n")
             return False
+
+    def kill(self):
+        print("YOU DED")

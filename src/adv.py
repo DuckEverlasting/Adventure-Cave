@@ -14,12 +14,17 @@ os.system("cls" if os.name == "nt" else "clear")
 color_init()
 
 #
+mem = {
+    "looked_at": {}
+}
+
+#
 # Main loop
 #
 
 end_game = False
 time_passed = False
-player_moved = False
+player_moved = True
 
 
 # Opening sequence
@@ -46,7 +51,7 @@ print(
     )
 )
 
-pause(3)
+pause(.5)
 
 os.system("cls" if os.name == "nt" else "clear")
 
@@ -60,32 +65,32 @@ while not end_game:
         for i in mob:
             if mob[i].alive:
                 mob_act(mob[i], player, player_moved)
-
-    spacers = ""
-    for i in range(len(player.loc.name)):
-        spacers += "-"
-
-    print(spacers)
-    print(player.loc.name)
-    print(spacers)
-    if player.loc.dark and player.light_check() == False:
-        print(f"{player.loc.dark_desc}\n")
-    else:
-        print(f"{player.loc.desc}\n")
+                
+    if player_moved:
+        spacers = "-" * len(player.loc.name)
+        print(spacers)
+        print(player.loc.name)
+        print(spacers)
 
     mobs_here = [mob[i] for i in mob if mob[i].alive and mob[i].loc == player.loc]
-
-    if player.loc.dark == False or player.light_check():
-        if len(player.loc.items) > 0:
-            print(f"You see {parse_list(player.loc.items)} here.")
-            if len(mobs_here) == 0:
-                print()
-
-        if len(mobs_here) > 0:
-            print(f"You see {parse_list(mobs_here)} here.\n")
-    else:
-        if len(mobs_here) > 0:
+    if player.loc.dark and not player.light_check():
+        if not player.loc.slug + "_dark" in mem["looked_at"]:
+            print(f"{player.loc.dark_desc}\n")
+            mem["looked_at"][player.loc.slug + "_dark"] = True
+        if player_moved and len(mobs_here) > 0:
             print(f"You hear {parse_list('something')} moving in the darkness.\n")
+    else:
+        if not player.loc.slug in mem["looked_at"]:
+            print(f"{player.loc.desc}\n")
+            mem["looked_at"][player.loc.slug] = True
+        if player_moved:
+            if len(player.loc.items) > 0:
+                print(f"You see {parse_list(player.loc.items)} here.")
+                if len(mobs_here) == 0:
+                    print()
+            if len(mobs_here) > 0:
+                print(f"You see {parse_list(mobs_here)} here.\n")
+
 
     # Reset variables
     time_passed = False

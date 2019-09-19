@@ -1,5 +1,6 @@
 class Room:
-    def __init__(self, name, desc, dark=False, dark_desc="", no_mobs=False, no_drop=False, init_items=[]):
+    def __init__(self, slug, name, desc, dark=False, dark_desc="", no_mobs=False, no_drop=False, init_items=[]):
+        self.slug = slug
         self.name = name
         self.desc = desc
         self.dark = dark

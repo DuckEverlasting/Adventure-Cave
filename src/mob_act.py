@@ -35,4 +35,5 @@ def hostile_behavior(mob, player, player_moved):
         if player_moved:
             print(f"The {mob.name} spots you and growls, preparing to attack.\n")
         else:
+            mob.attack_player(player)
             

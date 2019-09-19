@@ -45,9 +45,9 @@ class Item:
     
 
 class Light_Source(Item):
-    def __init__(self, name, long_name, desc, weight=None, active=False, tags=[]):
+    def __init__(self, name, long_name, desc, weight=None, lit=False, tags=[]):
         super().__init__(name, long_name, desc, weight, tags)
-        self.active = active
+        self.lit = lit
         self.tags = tags + ["light_source"]
 
 class Weapon(Item):

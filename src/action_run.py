@@ -47,26 +47,57 @@ def run_quit(command, player, item, mob):
         print()
 
 def run_look(command, player, item, mob):
-    if command["act"] != "look":
-        if command["i_obj"]:
-            print(text_style['error']("ERROR: COMMAND NOT RECOGNIZED\n"))
-        obj = command["d_obj"]
-    else:
-        if command["d_obj"]:
-            print(text_style['error']("ERROR: COMMAND NOT RECOGNIZED\n"))
-        obj = command["i_obj"]
-    if player.loc.dark and player.light_check() == False:
-        print("Too dark for that right now.\n")
-    elif obj in item:
-        result = player.look_item(item[obj])
-        if result:
-            return {"time_passed": True}
-    elif obj in mob:
-        result = player.look_mob(mob[obj])
-        if result:
-            return {"time_passed": True}
-    else:
-        print("There's nothing here by that name.\n")
+    # GENERAL LOOK
+    if not command["i_obj"] and not command["d_obj"]:
+        spacers = "-" * len(player.loc.name)
+        print(spacers)
+        print(player.loc.name)
+        print(spacers)
+        if player.loc.dark and not player.light_check():
+            print(f"{player.loc.dark_desc}\n")
+        else:
+            print(f"{player.loc.desc}\n")
+
+        mobs_here = [mob[i] for i in mob if mob[i].alive and mob[i].loc == player.loc]
+
+        if not player.loc.dark or player.light_check():
+            if len(player.loc.items) > 0:
+                print(f"You see {parse_list(player.loc.items)} here.")
+                if len(mobs_here) == 0:
+                    print()
+
+            if len(mobs_here) > 0:
+                print(f"You see {parse_list(mobs_here)} here.\n")
+        else:
+            if len(mobs_here) > 0:
+                print(f"You hear {parse_list('something')} moving in the darkness.\n")
+    else:    
+    # SPECIFIC LOOK
+        # Grammar check (because "look" uses prepositions but none of its synonyms do)
+        if command["act"] != "look":
+            if command["i_obj"]:
+                print(text_style['error']("ERROR: COMMAND NOT RECOGNIZED\n"))
+            obj = command["d_obj"]
+        else:
+            if command["d_obj"]:
+                print(text_style['error']("ERROR: COMMAND NOT RECOGNIZED\n"))
+            obj = command["i_obj"]
+
+        # Check lights
+        if player.loc.dark and not player.light_check():
+            print("Too dark for that right now.\n")
+        
+        # Return description for item or mob if available
+        elif obj in item:
+            result = player.look_item(item[obj])
+            if result:
+                return {"time_passed": True}
+        elif obj in mob:
+            result = player.look_mob(mob[obj])
+            if result:
+                return {"time_passed": True}
+        else:
+            print("There's nothing here by that name.\n")
 
 def run_get(command, player, item, mob):
     d_obj = command["d_obj"]
