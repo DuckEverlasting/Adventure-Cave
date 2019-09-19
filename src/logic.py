@@ -1,11 +1,12 @@
 multi_word_replace = {
     "pick up": "pick_up",
     "put down": "put_down",
-    "attack with": "attack_with",
     "goblin corpse": "goblin_corpse",
     "amulet of yendor": "amulet_of_yendor",
     "up to": "up_to",
-    "out of": "out_of"
+    "out of": "out_of",
+    "save game": "save",
+    "load game": "load"
 }
 
 single_word_replace = {
@@ -73,10 +74,12 @@ action_synonyms = {
     "inspect": "look",
     "take": "get",
     "leave": "drop",
-    "swing": "wield",
     "pick_up": "get",
     "put_down": "drop",
-    "attack_with": "wield",
+    "fight": "attack",
+    "battle": "attack",
+    "hit": "attack",
+    "kill": "attack",
     "walk": "go",
     "travel": "go"
 }
@@ -84,13 +87,13 @@ action_synonyms = {
 # Function to help interpret player commands
 def parse_command(command):
     error = {
-                "act": None,
-                "adv": None,
-                "d_obj": None,
-                "prep": None,
-                "i_obj": None,
-                "error": "error"
-            }
+        "act": None,
+        "adv": None,
+        "d_obj": None,
+        "prep": None,
+        "i_obj": None,
+        "error": "error"
+    }
     # Edge case
     if len(command) == 0: return error
 

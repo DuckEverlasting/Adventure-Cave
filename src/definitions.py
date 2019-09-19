@@ -210,7 +210,7 @@ mob = {
             "health": 10,
             "damage": 2,
             "accuracy": .75,
-            "evasion": .25
+            "evasion": .15
         },
         init_loc = room["foyer"],
         init_att = "neutral",
@@ -304,6 +304,22 @@ action = {
         },
         run = run_eat
     ),
+    "save": Action(
+        name = "save",
+        grammar = {
+            "d_obj_prohibited": True,
+            "i_obj_prohibited": True,
+        },
+        run = run_save
+    ),
+    "load": Action(
+        name = "load",
+        grammar = {
+            "d_obj_prohibited": True,
+            "i_obj_prohibited": True,
+        },
+        run = run_load
+    )
 }
 
 # Declare the player

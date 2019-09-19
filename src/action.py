@@ -3,45 +3,42 @@ class Action:
         self.name = name
         self.grammar = grammar
         self.run = run
-        self.messages = {
-
-        }
 
     def check_grammar(self, command):
-        if hasattr(self.grammar, "adv_required"):
+        if "adv_required" in self.grammar:
             # Currently hard coded for movement, since that's the only
             # place adverbs are being used.
             if not command["adv"]:
                 return {
                     "result": False,
-                    "message": f"Where would you like to {command['action']}?"
+                    "message": f"Where would you like to {command['act']}?"
                 }
                 
-        if hasattr(self.grammar, "d_obj_prohibited"):
+        if "d_obj_prohibited" in self.grammar:
             if command["d_obj"]:
                 return {
                     "result": False,
                     "message": f"The word {command['d_obj']} doesn't make sense there.",
                 }
-        elif hasattr(self.grammar, "d_obj_required"):
+        elif "d_obj_required" in self.grammar:
             if not command["d_obj"]:
-                return {"result": False, "message": f"What would you like to {command['action']}?"}
+                return {"result": False, "message": f"What would you like to {command['act']}?"}
 
-        if hasattr(self.grammar, "i_obj_prohibited"):
+        if "i_obj_prohibited" in self.grammar:
             if command["i_obj"]:
                 return {
                     "result": False,
                     "message": f"The word {command['d_obj']} doesn't make sense there.",
                 }
-        elif hasattr(self.grammar, "i_obj_required"):
+        elif "i_obj_required" in self.grammar:
             if not command["i_obj"]:
                 if command["d_obj"]:
                     return {
                         "result": False,
-                        "message": f"What would you like to {command['action']} {command['d_obj']} {self.grammar['preps_accepted'][0]}?",
+                        "message": f"What would you like to {command['act']} {command['d_obj']} {self.grammar['preps_accepted'][0]}?",
                     }
                 else:
-                    return {"result": False, "message": f"What would you like to {command['action']} {command['prep']}?"}
+                    return {"result": False, "message": f"What would you like to {command['act']} {command['prep']}?"}
 
         if command["i_obj"]:
             if command["prep"] not in self.grammar["preps_accepted"]:

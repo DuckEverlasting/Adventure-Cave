@@ -1,6 +1,7 @@
-import time
-from constants import text_style
+import shelve
+from constants import text_style, pause
 from logic import parse_list
+
 
 
 def run_help(command, player, item, mob):
@@ -41,7 +42,7 @@ def run_quit(command, player, item, mob):
     confirm = input('Are you sure? (Type "y" to confirm)\n> ')
     if confirm in ("y", "yes"):
         print("\nExiting game...\n")
-        time.sleep(0.75)
+        pause(0.75)
         return {"end_game": True}
     else:
         print()
@@ -49,10 +50,6 @@ def run_quit(command, player, item, mob):
 def run_look(command, player, item, mob):
     # GENERAL LOOK
     if not command["i_obj"] and not command["d_obj"]:
-        spacers = "-" * len(player.loc.name)
-        print(spacers)
-        print(player.loc.name)
-        print(spacers)
         if player.loc.dark and not player.light_check():
             print(f"{player.loc.dark_desc}\n")
         else:
@@ -181,3 +178,69 @@ def run_eat(command, player, item, mob):
             print("There's nothing here by that name.\n")
     else:
         print("There's nothing here by that name.\n")
+
+def run_save(player, item, room, mob, mem):
+    # Get saved games
+    saved_games = shelve.open('saved_games')
+    if not "list" in saved_games:
+        saved_games["list"] = []
+    confirm = input('Save your game? (Type "y" to confirm)\n> ')
+    if not confirm in ("y", "yes"):
+        print("Never mind, then.\n")
+        saved_games.close()
+        return
+    print("Pick a name.\n")
+    name = input('> ')
+    if not name or name == "list":
+        print("\nSave failed.\n")
+        saved_games.close()
+        return
+    elif name in saved_games:
+        confirm = input('That name already exists. Overwrite saved game? (Type "y" to confirm)\n> ')
+        if not confirm in ("y", "yes"):
+            print("Never mind, then.\n")
+            saved_games.close()
+            return
+    mem["save_dat"] = {
+        "player": player,
+        "item": item,
+        "room": room,
+        "mob": mob
+    }
+    saved_games["list"] += [name]
+    saved_games[name] = mem
+    saved_games.close()
+    print("\nSaved!.\n")
+    return   
+    
+def run_load(player, item, room, mob, mem, loop=False):
+    saved_games = shelve.open('saved_games')
+    if not loop:
+        confirm = input('Load a saved game? (Type "y" to confirm)\n> ')
+        if not confirm in ("y", "yes"):
+            print("Never mind, then.\n")
+            saved_games.close()
+            return
+        print('Load which game?\n')
+        print(text_style['error']("0: NONE (Cancel load)"))
+        for i in range(len(saved_games["list"])):
+            print (text_style['item'](f"{i + 1}: {saved_games['list'][i]}\n"))
+    else:
+        print('\nPlease enter a valid number\n')
+    number = input('> ')
+    try:
+        if int(number) == 0:
+            print("Never mind, then.\n")
+            saved_games.close()
+            return
+        elif int(number) - 1 in range(len(saved_games["list"])):
+            print("\nLoading game...\n")
+            pause(0.75)
+            name = saved_games["list"][int(number) - 1]
+            mem = saved_games[name]
+            saved_games.close()
+            return {"load_game": mem}
+        else:
+            run_load(player, item, room, mob, mem, loop=True)
+    except:
+        run_load(player, item, room, mob, mem, loop=True)

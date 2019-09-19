@@ -13,9 +13,11 @@ os.system("cls" if os.name == "nt" else "clear")
 # Initialize colorama
 color_init()
 
-#
+# Initialize mem
 mem = {
-    "looked_at": {}
+    "score": 0,
+    "looked_at": {},
+    "save_dat": {}
 }
 
 #
@@ -51,7 +53,7 @@ print(
     )
 )
 
-pause(.5)
+pause(3)
 
 os.system("cls" if os.name == "nt" else "clear")
 
@@ -60,12 +62,22 @@ pause()
 # Start of loop
 while not end_game:
 
+    # Check for loaded game
+    if not mem["save_dat"] == {}:
+        player = mem["save_dat"]["player"]
+        item = mem["save_dat"]["item"]
+        room = mem["save_dat"]["room"]
+        mob = mem["save_dat"]["mob"]
+        mem["save_dat"] = {}
+
     # Before player's turn
+    # Mob actions
     if time_passed:
         for i in mob:
             if mob[i].alive:
                 mob_act(mob[i], player, player_moved)
-                
+
+    # Determine which information to display            
     if player_moved:
         spacers = "-" * len(player.loc.name)
         print(spacers)
@@ -121,21 +133,40 @@ while not end_game:
         print(text_style['error']("ERROR: COMMAND NOT RECOGNIZED\n"))
 
     if act in action:
-        result = action[act].run(
-            command = command,
-            player = player,
-            item = item,
-            mob = mob
-        )
-
-        if result != None:  
-            if "time_passed" in result:
-                time_passed = True
-            if "player_moved" in result:
+        grammar_check = action[act].check_grammar(command)
+        if not grammar_check["result"]:
+            print(grammar_check["message"] + "\n")
+        if act in ("save", "load"):
+            action_result = action[act].run(
+                player = player,
+                item = item,
+                room = room,
+                mob = mob,
+                mem = mem
+            )
+            if action_result and "load_game" in action_result:
+                mem = action_result["load_game"]
                 player_moved = True
-            if "end_game" in result:
-                end_game = True
-        
+        else:
+            action_result = action[act].run(
+                command = command,
+                player = player,
+                item = item,
+                mob = mob
+            )
+
+            if action_result != None:  
+                if "time_passed" in action_result:
+                    time_passed = True
+                if "player_moved" in action_result:
+                    player_moved = True
+                if "end_game" in action_result:
+                    end_game = True
+                if "load_game" in action_result:
+                    mem = action_result["load_game"]
+                    player_moved = True
+
+
     else:
         print(text_style['error']("ERROR: COMMAND NOT RECOGNIZED\n"))
         

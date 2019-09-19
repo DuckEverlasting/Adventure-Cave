@@ -10,7 +10,7 @@ class Player:
         self.health = 10
         self.strength = 10
         self.accuracy = .9
-        self.evasion = .3
+        self.evasion = .2
         self.status = "normal"
         self.load = sum(i.weight for i in self.items)
         self.max_load = 10
