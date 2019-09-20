@@ -147,6 +147,7 @@ while not end_game:
             if action_result and "load_game" in action_result:
                 mem = action_result["load_game"]
                 player_moved = True
+                os.system("cls" if os.name == "nt" else "clear")
         else:
             action_result = action[act].run(
                 command = command,

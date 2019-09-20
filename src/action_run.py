@@ -2,8 +2,6 @@ import shelve
 from constants import text_style, pause
 from logic import parse_list
 
-
-
 def run_help(command, player, item, mob):
     print("==============\nBasic Controls\n==============")
     print(
@@ -186,10 +184,10 @@ def run_save(player, item, room, mob, mem):
         saved_games["list"] = []
     confirm = input('Save your game? (Type "y" to confirm)\n> ')
     if not confirm in ("y", "yes"):
-        print("Never mind, then.\n")
+        print("\nNever mind, then.\n")
         saved_games.close()
         return
-    print("Pick a name.\n")
+    print("\nPick a name.")
     name = input('> ')
     if not name or name == "list":
         print("\nSave failed.\n")
@@ -198,7 +196,7 @@ def run_save(player, item, room, mob, mem):
     elif name in saved_games:
         confirm = input('That name already exists. Overwrite saved game? (Type "y" to confirm)\n> ')
         if not confirm in ("y", "yes"):
-            print("Never mind, then.\n")
+            print("\nNever mind, then.\n")
             saved_games.close()
             return
     mem["save_dat"] = {
@@ -218,19 +216,19 @@ def run_load(player, item, room, mob, mem, loop=False):
     if not loop:
         confirm = input('Load a saved game? (Type "y" to confirm)\n> ')
         if not confirm in ("y", "yes"):
-            print("Never mind, then.\n")
+            print("\nNever mind, then.\n")
             saved_games.close()
             return
-        print('Load which game?\n')
+        print('\nLoad which game?')
         print(text_style['error']("0: NONE (Cancel load)"))
         for i in range(len(saved_games["list"])):
-            print (text_style['item'](f"{i + 1}: {saved_games['list'][i]}\n"))
+            print(text_style['item'](f"{i + 1}: {saved_games['list'][i]}\n"))
     else:
         print('\nPlease enter a valid number\n')
     number = input('> ')
     try:
         if int(number) == 0:
-            print("Never mind, then.\n")
+            print("\nNever mind, then.\n")
             saved_games.close()
             return
         elif int(number) - 1 in range(len(saved_games["list"])):
@@ -244,3 +242,19 @@ def run_load(player, item, room, mob, mem, loop=False):
             run_load(player, item, room, mob, mem, loop=True)
     except:
         run_load(player, item, room, mob, mem, loop=True)
+
+run = {
+    "help": run_help,
+    "go": run_go,
+    "inventory": run_inventory,
+    "wait": run_wait,
+    "quit": run_quit,
+    "look": run_look,
+    "get": run_get,
+    "drop": run_drop,
+    "use": run_use,
+    "attack": run_attack,
+    "eat": run_eat,
+    "save": run_save,
+    "load": run_load
+}
