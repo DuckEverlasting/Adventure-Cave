@@ -9,74 +9,6 @@ from constants import text_style
 
 # Declare the actions
 action = {
-    "help": Action(
-        name = "help",
-        grammar = {
-            "d_obj_prohibited": True,
-            "i_obj_prohibited": True,
-        },
-        run = run["help"]
-    ),
-    "go": Action(
-        name = "go",
-        grammar = {
-            "adv_required": True,
-        },
-        run = run["go"]
-    ),
-    "inventory": Action(
-        name = "inventory",
-        grammar = {
-            "d_obj_prohibited": True,
-            "i_obj_prohibited": True,
-        },
-        run = run["inventory"]
-    ),
-    "wait": Action(
-        name = "wait",
-        grammar = {},
-        run = run["wait"]
-    ),
-    "quit": Action(
-        name = "quit",
-        grammar = {
-            "d_obj_prohibited": True,
-            "i_obj_prohibited": True,
-        },
-        run = run["quit"]
-    ),
-    "look": Action(
-        name = "look",
-        grammar = {
-            "d_obj_prohibited": True,
-            "preps_accepted": ("at", "in", "into", "inside", "beneath", "underneath", "under", "below", )
-        },
-        run = run["look"]
-    ),
-    "get": Action(
-        name = "get",
-        grammar = {
-            "d_obj_required": True,
-            "i_obj_prohibited": True,
-        },
-        run = run["get"]
-    ),
-    "drop": Action(
-        name = "drop",
-        grammar = {
-            "d_obj_required": True,
-            "i_obj_prohibited": True,
-        },
-        run = run["drop"]
-    ),
-    "use": Action(
-        name = "use",
-        grammar = {
-            "d_obj_required": True,
-            "preps_accepted": ("with", "on",)
-        },
-        run = run["use"]
-    ),
     "attack": Action(
         name = "attack",
         grammar = {
@@ -84,14 +16,6 @@ action = {
             "preps_accepted": ("with", "using"),
         },
         run = run["attack"]
-    ),
-    "eat": Action(
-        name = "eat",
-        grammar = {
-            "d_obj_required": True,
-            "i_obj_prohibited": True,
-        },
-        run = run["eat"]
     ),
     "die": Action(
         name = "die",
@@ -101,13 +25,52 @@ action = {
         },
         run = run["die"]
     ),
-    "save": Action(
-        name = "save",
+    "drop": Action(
+        name = "drop",
+        grammar = {
+            "d_obj_required": True,
+            "i_obj_prohibited": True,
+        },
+        run = run["drop"]
+    ),
+    "eat": Action(
+        name = "eat",
+        grammar = {
+            "d_obj_required": True,
+            "i_obj_prohibited": True,
+        },
+        run = run["eat"]
+    ),
+    "get": Action(
+        name = "get",
+        grammar = {
+            "d_obj_required": True,
+            "i_obj_prohibited": True,
+        },
+        run = run["get"]
+    ),
+    "go": Action(
+        name = "go",
+        grammar = {
+            "adv_required": True,
+        },
+        run = run["go"]
+    ),
+    "help": Action(
+        name = "help",
         grammar = {
             "d_obj_prohibited": True,
             "i_obj_prohibited": True,
         },
-        run = run["save"]
+        run = run["help"]
+    ),
+    "inventory": Action(
+        name = "inventory",
+        grammar = {
+            "d_obj_prohibited": True,
+            "i_obj_prohibited": True,
+        },
+        run = run["inventory"]
     ),
     "load": Action(
         name = "load",
@@ -117,18 +80,78 @@ action = {
         },
         run = run["load"]
     )
+    "look": Action(
+        name = "look",
+        grammar = {
+            "d_obj_prohibited": True,
+            "preps_accepted": ("at", "in", "into", "inside", "beneath", "underneath", "under", "below", )
+        },
+        run = run["look"]
+    ),
+    "quit": Action(
+        name = "quit",
+        grammar = {
+            "d_obj_prohibited": True,
+            "i_obj_prohibited": True,
+        },
+        run = run["quit"]
+    ),
+    "save": Action(
+        name = "save",
+        grammar = {
+            "d_obj_prohibited": True,
+            "i_obj_prohibited": True,
+        },
+        run = run["save"]
+    ),
+    "use": Action(
+        name = "use",
+        grammar = {
+            "d_obj_required": True,
+            "preps_accepted": ("with", "on",)
+        },
+        run = run["use"]
+    ),
+    "wait": Action(
+        name = "wait",
+        grammar = {},
+        run = run["wait"]
+    ),
 }
 
 # Declare the items
 item = {
-    "cheese": Item(
-        name=text_style['item']("cheese"),
-        long_name=f"a hunk of {text_style['item']('cheese')}",
-        desc=text_style['desc'](
-            "It is a hunk of cheese. Looks all right."
+    "fists": Weapon(
+        name=text_style['item']("fists"),
+        long_name=f"your {text_style['item']('fists')}",
+        desc=None,
+        stats={
+            "damage": 1,
+            "accuracy": 0.9
+        },
+        attack_text=(
+            f"You pretend you're a boxer and attempt a left hook with your {text_style['item']('fists')}.",
+            f"You leap forward, putting your {text_style['item']('fists')} in front of you in the hope that they do some damage.",
+            f"You swing your {text_style['item']('fists')} around in your best imitation of a helicopter."
         ),
-        weight=0.25,
-        tags=["obtainable", "food"]
+        tags=["obtainable"]
+    ),
+    "knife": Weapon(
+        name=text_style['item']("knife"),
+        long_name=f"a {text_style['item']('knife')}",
+        desc=text_style['desc'](
+            "It's a knife. Like for cutting your steak with, except designed for steak that is actively trying to kill you."
+        ),
+        weight=2,
+        stats={
+            "damage": 2,
+            "accuracy": 0.95
+        },
+        attack_text=(
+            f"Gripping your {text_style['item']('knife')} in a {text_style['item']('knife')}-like manner, you stab with the stabby part.",
+            f"You slash forward with your {text_style['item']('knife')}, praying for a hit.",
+        ),
+        tags=["obtainable"]
     ),
     "sword": Weapon(
         name=text_style['item']("sword"),
@@ -146,21 +169,6 @@ item = {
         ),
         tags=["obtainable"]
     ),
-    "fists": Weapon(
-        name=text_style['item']("fists"),
-        long_name=f"your {text_style['item']('fists')}",
-        desc=None,
-        stats={
-            "damage": 1,
-            "accuracy": 0.9
-        },
-        attack_text=(
-            f"You pretend you're a boxer and attempt a left hook with your {text_style['item']('fists')}.",
-            f"You leap forward, putting your {text_style['item']('fists')} in front of you in the hope that they do some damage.",
-            f"You swing your {text_style['item']('fists')} around in your best imitation of a helicopter."
-        ),
-        tags=["obtainable"]
-    ),
     "lantern": Light_Source(
         name=text_style['item']("lantern"),
         long_name=f"an extinguished {text_style['item']('lantern')}",
@@ -170,12 +178,23 @@ item = {
         weight=1,
         tags=["obtainable"]
     ),
-    "rope": Item(
-        name=text_style['item']("rope"),
-        long_name=f"some {text_style['item']('rope')}",
-        desc=text_style['desc']("Good, sturdy rope, about 50 feet long."),
-        weight=2,
+    "amulet_of_yendor": Item(
+        name=text_style['item']("Amulet of Yendor"),
+        long_name=f"the {text_style['item']('Amulet of Yendor')}",
+        desc=text_style['desc'](
+            "This amulet is said to contain unimaginable power."
+        ),
+        weight=0.5,
         tags=["obtainable"]
+    ),
+    "cheese": Item(
+        name=text_style['item']("cheese"),
+        long_name=f"a hunk of {text_style['item']('cheese')}",
+        desc=text_style['desc'](
+            "It is a hunk of cheese. Looks all right."
+        ),
+        weight=0.25,
+        tags=["obtainable", "food"]
     ),
     "goblin_corpse": Item(
         name=text_style['item']("goblin corpse"),
@@ -184,6 +203,13 @@ item = {
             f"It's a dead goblin. You turn it over, looking for valuables, but all you can find is a\ncrumpled {text_style['item_in_desc']('matchbook')}, which falls to the floor next to the corpse."
         ),
         tags=["corpse"]
+    ),
+    "lever": Item(
+        name=text_style['item']("lever"),
+        long_name=f"a {text_style['item']('lever')} jutting from the cliffside",
+        desc=text_style['desc'](
+            "It looks close enough to reach. Your fingers twitch. You never could resist a good lever."
+        )
     ),
     "matchbook": Item(
         name=text_style['item']("matchbook"),
@@ -194,20 +220,11 @@ item = {
         weight=0.1,
         tags=["obtainable"]
     ),
-    "lever": Item(
-        name=text_style['item']("lever"),
-        long_name=f"a {text_style['item']('lever')} jutting from the cliffside",
-        desc=text_style['desc'](
-            "It looks close enough to reach. Your fingers twitch. You never could resist a good lever."
-        )
-    ),
-    "amulet_of_yendor": Item(
-        name=text_style['item']("Amulet of Yendor"),
-        long_name=f"the {text_style['item']('Amulet of Yendor')}",
-        desc=text_style['desc'](
-            "This amulet is said to contain unimaginable power."
-        ),
-        weight=0.5,
+    "rope": Item(
+        name=text_style['item']("rope"),
+        long_name=f"some {text_style['item']('rope')}",
+        desc=text_style['desc']("Good, sturdy rope, about 50 feet long."),
+        weight=2,
         tags=["obtainable"]
     ),
 }

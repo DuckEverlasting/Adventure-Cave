@@ -31,6 +31,10 @@ It has grown significantly, but it's purpose still remains largely the same: I'v
 
 * Consider replacing the use action. It's crazy generic.
 
+* Fully implement encumberance
+
+* Implement containers
+
 * Think about implementing "get all"
 
 * Additional actions to consider:
