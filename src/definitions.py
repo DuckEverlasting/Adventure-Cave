@@ -93,6 +93,14 @@ action = {
         },
         run = run["eat"]
     ),
+    "die": Action(
+        name = "die",
+        grammar = {
+            "d_obj_prohibited": True,
+            "i_obj_prohibited": True,
+        },
+        run = run["die"]
+    ),
     "save": Action(
         name = "save",
         grammar = {

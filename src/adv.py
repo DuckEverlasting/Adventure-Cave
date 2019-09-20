@@ -13,21 +13,21 @@ os.system("cls" if os.name == "nt" else "clear")
 # Initialize colorama
 color_init()
 
-# Initialize mem
-mem = {
-    "score": 0,
-    "looked_at": {},
-    "save_dat": {}
-}
-
-#
-# Main loop
-#
-
 end_game = False
 time_passed = False
 player_moved = True
+mem = {}
 
+def initialize():
+# Initialize mem - use when starting new game
+    return {
+        "score": 0,
+        "looked_at": {},
+        "save_dat": {}
+    }
+
+
+mem = initialize()
 
 # Opening sequence
 print(
@@ -59,7 +59,7 @@ os.system("cls" if os.name == "nt" else "clear")
 
 pause()
 
-# Start of loop
+# Start of main loop
 while not end_game:
 
     # Check for loaded game
@@ -136,7 +136,7 @@ while not end_game:
         grammar_check = action[act].check_grammar(command)
         if not grammar_check["result"]:
             print(grammar_check["message"] + "\n")
-        if act in ("save", "load"):
+        if act == "save":
             action_result = action[act].run(
                 player = player,
                 item = item,
@@ -144,6 +144,8 @@ while not end_game:
                 mob = mob,
                 mem = mem
             )
+        elif act == "load":
+            action_result = action[act].run(mem = mem)
             if action_result and "load_game" in action_result:
                 mem = action_result["load_game"]
                 player_moved = True
@@ -167,7 +169,6 @@ while not end_game:
                     mem = action_result["load_game"]
                     player_moved = True
 
-
     else:
         print(text_style['error']("ERROR: COMMAND NOT RECOGNIZED\n"))
         
@@ -175,14 +176,18 @@ while not end_game:
     # Brief pause included for flavor
     pause()
 
-    if item["amulet_of_yendor"] in player.items:
-        # set game to end after this loop
-        end_game = True
+    # check for game over cases
+    if player.health <= 0:
+        print("You have died. Better luck next time!")
+
+    elif item["amulet_of_yendor"] in player.items:
         print("You've won the game! Congratulations!!!")
+    
+    if player.health <= 0 or item["amulet_of_yendor"] in player.items:
         pause()
         print(
             text_style['title'](
-                """
+"""
 █‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾█
 █     ██████╗  █████╗ ███╗   ███╗███████╗     ██████╗ ██╗   ██╗███████╗██████╗      █
 █    ██╔════╝ ██╔══██╗████╗ ████║██╔════╝    ██╔═══██╗██║   ██║██╔════╝██╔══██╗     █
@@ -195,5 +200,30 @@ while not end_game:
 """
             )
         )
-        pause(3)
+        pause(2)
+        choice = None
+        while choice not in ["1", "2", "3"]:
+            if not choice == None:
+                print("Please enter one of the below options:")
+            print(text_style["item"]("1: Start new game\n2: Load game\n3: Quit game\n"))
+            choice = input("> ")
+        if choice == "1":
+            mem = initialize()
+            player_moved = True
+            os.system("cls" if os.name == "nt" else "clear")
+            pause()
+        elif choice == "2":
+            result = action["load"].run(mem = mem, get_confirm=False)
+            if result and "load_game" in result:
+                mem = result["load_game"]
+                player_moved = True
+                os.system("cls" if os.name == "nt" else "clear")
+                pause()
+            else:
+                end_game = True
+        elif choice == "3":
+            end_game = True
+            print("\nExiting game...\n")
+            pause(0.75)
+        
 

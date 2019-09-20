@@ -61,7 +61,6 @@ class Mob:
                 print(f"{random.choice(self.text['attack_success'])}\n")
             else:
                 print(random.choice(self.text["kill_player"]) + "\n")
-                player.kill()
 
     def on_look(self):
         pass

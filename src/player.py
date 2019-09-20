@@ -128,6 +128,3 @@ class Player:
         else:
             print("There's nothing here by that name.\n")
             return False
-
-    def kill(self):
-        print("YOU DED")

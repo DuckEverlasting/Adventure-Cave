@@ -8,10 +8,13 @@ def run_help(command, player, item, mob):
         f"Move around: \"{text_style['item']('n')}orth\", \"{text_style['item']('s')}outh\", \"{text_style['item']('e')}ast\", \"{text_style['item']('w')}est\", \"down\", \"up\""
     )
     print(
-        f"Interact with things: \"{text_style['item']('l')}ook\", \"{text_style['item']('g')}et\", \"{text_style['item']('d')}rop\", \"{text_style['item']('u')}se\""
+        f"Interact with things: \"{text_style['item']('l')}ook\", \"{text_style['item']('g')}et\", \"{text_style['item']('d')}rop\", \"{text_style['item']('u')}se\", \"eat\""
     )
     print(f"Check inventory: \"{text_style['item']('i')}nv\"")
-    print(f"Do nothing: wait")
+    print(f"Fight: \"attack\"")
+    print(f"Do nothing: \"wait\"")
+    print(f"Save game: \"save\"")
+    print(f"Load game: \"load\"")
     print(f"Exit game: \"{text_style['item']('q')}uit\"")
     print()
 
@@ -177,6 +180,14 @@ def run_eat(command, player, item, mob):
     else:
         print("There's nothing here by that name.\n")
 
+def run_die(command, player, item, mob):
+    confirm = input('Really? (Type "y" to confirm)\n> ')
+    if confirm in ("y", "yes"):
+        print("\nOkay...\n")
+        player.health = 0
+    else:
+        print()
+
 def run_save(player, item, room, mob, mem):
     # Get saved games
     saved_games = shelve.open('saved_games')
@@ -209,23 +220,24 @@ def run_save(player, item, room, mob, mem):
     saved_games[name] = mem
     saved_games.close()
     print("\nSaved!.\n")
-    return   
+    return
     
-def run_load(player, item, room, mob, mem, loop=False):
-    saved_games = shelve.open('saved_games')
+def run_load(mem, loop=False, get_confirm=True):
     if not loop:
-        confirm = input('Load a saved game? (Type "y" to confirm)\n> ')
-        if not confirm in ("y", "yes"):
-            print("\nNever mind, then.\n")
-            saved_games.close()
-            return
+        saved_games = shelve.open('saved_games')
+        if get_confirm:
+            confirm = input('Load a saved game? (Type "y" to confirm)\n> ')
+            if not confirm in ("y", "yes"):
+                print("\nNever mind, then.\n")
+                saved_games.close()
+                return
         print('\nLoad which game?')
         print(text_style['error']("0: NONE (Cancel load)"))
         for i in range(len(saved_games["list"])):
-            print(text_style['item'](f"{i + 1}: {saved_games['list'][i]}\n"))
+            print(text_style['item'](f"{i + 1}: {saved_games['list'][i]}"))
     else:
-        print('\nPlease enter a valid number\n')
-    number = input('> ')
+        print('\nPlease enter a valid number')
+    number = input('\n> ')
     try:
         if int(number) == 0:
             print("\nNever mind, then.\n")
@@ -239,9 +251,9 @@ def run_load(player, item, room, mob, mem, loop=False):
             saved_games.close()
             return {"load_game": mem}
         else:
-            run_load(player, item, room, mob, mem, loop=True)
+            run_load(mem, loop=True)
     except:
-        run_load(player, item, room, mob, mem, loop=True)
+        run_load(mem, loop=True)
 
 run = {
     "help": run_help,
@@ -255,6 +267,7 @@ run = {
     "use": run_use,
     "attack": run_attack,
     "eat": run_eat,
+    "die": run_die,
     "save": run_save,
     "load": run_load
 }
