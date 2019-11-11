@@ -1,4 +1,4 @@
-import shelve
+import shelve # Used in saving / loading
 from constants import text_style, pause
 from logic import parse_list
 
@@ -174,11 +174,22 @@ def run_eat(command, player, item, mob):
             return {"time_passed": True}
     elif d_obj in mob:
         if mob[d_obj].loc == player.loc:
-            print(f"That's... not food.\n")
+            print("That's... not food.\n")
         else:
             print("There's nothing here by that name.\n")
     else:
         print("There's nothing here by that name.\n")
+
+def run_talk(command, player, item, mob):
+    i_obj = command["i_obj"]
+    if i_obj in item and (item[i_obj] in player.items or item[i_obj] in player.loc.items):
+        print(f"You attempt to have a comversation with the {i_obj}. It is rather one-sided.\n")
+    elif i_obj in mob and mob[i_obj].loc == player.loc:
+        mob[i_obj].on_talk()
+    elif i_obj in ("myself", "yourself", "self",):
+        print("You strike up a conversation with yourself, but quickly grow bored.\n")
+    else:
+        print(f"There's no {i_obj} here.\n")
 
 def run_die(command, player, item, mob):
     confirm = input('Really? (Type "y" to confirm)\n> ')
@@ -267,6 +278,7 @@ run = {
     "use": run_use,
     "attack": run_attack,
     "eat": run_eat,
+    "talk": run_talk,
     "die": run_die,
     "save": run_save,
     "load": run_load

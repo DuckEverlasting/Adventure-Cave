@@ -65,6 +65,9 @@ class Mob:
     def on_look(self):
         pass
 
+    def on_talk(self):
+        print(f"The {self.name} lets forth a series on unintelligible grunts and yips, and\nyou suddenly remember that you don't speak {self.name}.")
+
     def kill(self):
         for i in self.items:
             self.loc.add_item(i)

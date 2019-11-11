@@ -79,7 +79,7 @@ action = {
             "i_obj_prohibited": True,
         },
         run = run["load"]
-    )
+    ),
     "look": Action(
         name = "look",
         grammar = {
@@ -103,6 +103,15 @@ action = {
             "i_obj_prohibited": True,
         },
         run = run["save"]
+    ),
+    "talk": Action(
+        name = "talk",
+        grammar = {
+            "d_obj_prohibited": True,
+            "i_obj_required": True,
+            "preps_accepted": ("to", "with",)
+        },
+        run = run["talk"]
     ),
     "use": Action(
         name = "use",
