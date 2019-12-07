@@ -4,6 +4,16 @@ This started as an intro to Python exercise from the CS portion of Lambda school
 
 It has grown significantly, but it's purpose still remains largely the same: I've been using it to further my understanding of Python, and of OOP in general.
 
+Aside from the 50 or so lines of code that made up the original assignment, all work here is by Matt Klein. (https://github.com/DuckEverlasting)
+
+## Guide
+Welcome, adventurer! This is a text-based adventure game along the lines of Zork or Colossal Cave. You play the game by typing simple commands into the console. Some examples:
+* Walk north
+* Look at goblin
+* Get sword
+
+If you need a list of the most common commands, try entering "help".
+
 ## Current Goals
 
 * Add more content of all sorts. More rooms, items, and mobs. Use some of the features that have been built, so the thing doesn't seem so needlessly ornate.
