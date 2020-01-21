@@ -1,10 +1,11 @@
 import random
+import copy
 from colorama import init as color_init
 import os
 
 from constants import text_style, pause
 from logic import parse_list, parse_command, action_synonyms
-from definitions import item, room, mob, player, action
+from definitions import create
 from mob_act import mob_act
 
 # Clear terminal
@@ -16,9 +17,27 @@ color_init()
 end_game = False
 time_passed = False
 player_moved = True
+item = None
+room = None
+mob = None
+player = None
+action = None
 mem = {}
 
-def initialize():
+def initialize_state():
+    global item
+    global room
+    global mob
+    global player
+    global action
+    state = create()
+    item = state["item"]
+    room = state["room"]
+    mob = state["mob"]
+    player = state["player"]
+    action = state["action"]
+
+def initialize_mem():
 # Initialize mem - use when starting new game
     return {
         "score": 0,
@@ -26,8 +45,8 @@ def initialize():
         "save_dat": {}
     }
 
-
-mem = initialize()
+initialize_state()
+mem = initialize_mem()
 
 # Opening sequence
 print(
@@ -208,7 +227,8 @@ while not end_game:
             print(text_style["item"]("1: Start new game\n2: Load game\n3: Quit game\n"))
             choice = input("> ")
         if choice == "1":
-            mem = initialize()
+            initialize_state()
+            mem = initialize_mem()
             player_moved = True
             os.system("cls" if os.name == "nt" else "clear")
             pause()
