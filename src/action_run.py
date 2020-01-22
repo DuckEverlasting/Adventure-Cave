@@ -87,15 +87,20 @@ def run_look(command, player, item, mob):
         
         # Return description for item or mob if available
         elif obj in item:
-            result = player.look_item(item[obj])
-            if result:
+            if item in player.items or item in player.loc.items:
+                print(f"{item.desc}\n")
+                item.on_look()
                 return {"time_passed": True}
+            else:
+                print("There's nothing here by that name.\n")
+
         elif obj in mob:
-            result = player.look_mob(mob[obj])
-            if result:
+            if mob.loc == player.loc:
+                print(f"{mob.desc}\n")
+                mob.on_look()
                 return {"time_passed": True}
-        else:
-            print("There's nothing here by that name.\n")
+            else:
+                print("There's nothing here by that name.\n")
 
 def run_get(command, player, item, mob):
     d_obj = command["d_obj"]

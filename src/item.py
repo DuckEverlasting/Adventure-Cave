@@ -1,4 +1,7 @@
 class Item:
+    """
+    Base item class
+    """
     def __init__(self, name, long_name, desc, weight=None, tags=[]):
         self.name = name
         self.long_name = long_name
@@ -10,10 +13,16 @@ class Item:
         return self.name
     
     def use(self):
+        """
+        Default behavior for the "use" command. Overwrite to specify a use.
+        """
         print(f"You don't see a way to use the {self.name}.\n")
         return False
     
     def use_from_env(self):
+        """
+        Default behavior for the "use" command if the item is in the room, but not in inventory. Overwrite to specify.
+        """
         if "obtainable" in self.tags:
             print("Try picking it up first.\n")
             return False
@@ -22,15 +31,27 @@ class Item:
             return False
     
     def on_eat(self):
+        """
+        Effect to be triggered upon eating item. Overwrite to specify. (Default = no effect)
+        """
         pass
     
     def on_look(self):
+        """
+        Effect to be triggered upon looking at item. Overwrite to specify. (Default = no effect)
+        """
         pass
 
     def on_pick_up(self):
+        """
+        Effect to be triggered upon picking up item. Overwrite to specify. (Default = no effect)
+        """
         pass
 
     def eat(self, container):
+        """
+        Handles the "eat" command for most items. Can overwrite to specify, of course.
+        """
         if "food" in self.tags:
             print(f"You wolf down the {self.name}. Yum.\n")
             self.on_eat()
@@ -45,12 +66,18 @@ class Item:
     
 
 class Light_Source(Item):
+    """
+    Subclass for items that provide light
+    """
     def __init__(self, name, long_name, desc, weight=None, lit=False, tags=[]):
         super().__init__(name, long_name, desc, weight, tags)
         self.lit = lit
         self.tags = tags + ["light_source"]
 
 class Weapon(Item):
+    """
+    Subclass for items that can be used as weapons
+    """
     def __init__(self, name, long_name, desc, stats, attack_text, weight=None, tags=[]):
         super().__init__(name, long_name, desc, weight, tags)
         self.damage = stats["damage"]

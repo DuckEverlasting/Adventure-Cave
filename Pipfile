@@ -7,6 +7,10 @@ name = "pypi"
 colorama = "*"
 
 [dev-packages]
+black = "*"
 
 [requires]
 python_version = "3"
+
+[pipenv]
+allow_prereleases = true

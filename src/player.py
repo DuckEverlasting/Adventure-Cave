@@ -1,8 +1,10 @@
 from constants import text_style
 import random
 
-
 class Player:
+    """
+    Class for the player character. There should only be one instance at a time!
+    """
     def __init__(self, init_loc, init_items=[]):
         self.loc = init_loc
         self.prev_loc = None
@@ -16,6 +18,9 @@ class Player:
         self.max_load = 10
 
     def light_check(self):
+        """
+        Returns true if the current room is lit, false if it isn't
+        """
         light_source = False
         for i in self.items:
             try:
@@ -30,6 +35,9 @@ class Player:
         return light_source
 
     def move(self, dir):
+        """
+        Moves the player and prints
+        """
         if hasattr(self.loc, f"{dir}_to"):
             dest = getattr(self.loc, f"{dir}_to")
             self.prev_loc = self.loc
@@ -38,24 +46,6 @@ class Player:
             return True
         else:
             print(text_style['error']("ERROR: MOVEMENT NOT ALLOWED\n"))
-            return False
-
-    def look_item(self, item):
-        if item in self.items or item in self.loc.items:
-            print(f"{item.desc}\n")
-            item.on_look()
-            return True
-        else:
-            print("There's nothing here by that name.\n")
-            return False
-
-    def look_mob(self, mob):
-        if mob.loc == self.loc:
-            print(f"{mob.desc}\n")
-            mob.on_look()
-            return True
-        else:
-            print("There's nothing here by that name.\n")
             return False
 
     def get_item(self, item):
