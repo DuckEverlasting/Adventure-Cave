@@ -82,7 +82,9 @@ action_synonyms = {
     "hit": "attack",
     "kill": "attack",
     "walk": "go",
-    "travel": "go"
+    "travel": "go",
+    "speak": "talk",
+    "shout": "talk"
 }
 
 # Function to help interpret player commands

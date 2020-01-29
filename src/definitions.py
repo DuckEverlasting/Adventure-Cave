@@ -112,7 +112,7 @@ def create():
             grammar = {
                 "d_obj_prohibited": True,
                 "i_obj_required": True,
-                "preps_accepted": ("to", "with",)
+                "preps_accepted": ("to", "with", "at",)
             },
             run = run["talk"]
         ),
