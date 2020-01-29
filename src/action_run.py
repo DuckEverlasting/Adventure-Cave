@@ -87,17 +87,17 @@ def run_look(command, player, item, mob):
         
         # Return description for item or mob if available
         elif obj in item:
-            if item in player.items or item in player.loc.items:
-                print(f"{item.desc}\n")
-                item.on_look()
+            if item[obj] in player.items or item[obj] in player.loc.items:
+                print(f"{item[obj].desc}\n")
+                item[obj].on_look()
                 return {"time_passed": True}
             else:
                 print("There's nothing here by that name.\n")
 
         elif obj in mob:
-            if mob.loc == player.loc:
-                print(f"{mob.desc}\n")
-                mob.on_look()
+            if mob[obj].loc == player.loc:
+                print(f"{mob[obj].desc}\n")
+                mob[obj].on_look()
                 return {"time_passed": True}
             else:
                 print("There's nothing here by that name.\n")

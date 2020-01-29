@@ -47,6 +47,10 @@ If you need a list of the most common commands, try entering "help".
 
 * Think about implementing "get all"
 
+* Add a menu to the beginning of the game similar to the one at the end.
+
+* Add an intro (and on restart, offer the chance to skip the intro)
+
 * Additional actions to consider:
     - Talk (this one could be a bit of a rabbit hole)
     - Status (check status)

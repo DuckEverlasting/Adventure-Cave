@@ -41,6 +41,5 @@ text_style = {
     "dir_in_desc": dir_in_desc_text,
 }
 
-
 def pause(num=0.75):
     time.sleep(num)

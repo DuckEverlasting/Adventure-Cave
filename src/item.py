@@ -63,7 +63,6 @@ class Item:
         else:
             print(f"That's... not food.\n")
             return False
-    
 
 class Light_Source(Item):
     """

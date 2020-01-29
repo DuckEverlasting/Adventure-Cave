@@ -30,7 +30,6 @@ class Mob:
         elif room:
             if not room.no_mobs:
                 self.loc = room
-
     
     def moveRand(self):
         directions = {
