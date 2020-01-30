@@ -151,11 +151,11 @@ while not end_game:
     if error:
         print(text_style['error']("ERROR: COMMAND NOT RECOGNIZED\n"))
 
-    if act in action:
+    elif act in action:
         grammar_check = action[act].check_grammar(command)
         if not grammar_check["result"]:
             print(grammar_check["message"] + "\n")
-        if act == "save":
+        elif act == "save":
             action_result = action[act].run(
                 player = player,
                 item = item,
@@ -189,7 +189,7 @@ while not end_game:
                     player_moved = True
 
     else:
-        print(text_style['error']("ERROR: COMMAND NOT RECOGNIZED\n"))
+        print(f"You don't know how to {act}.\n")
         
 
     # Brief pause included for flavor
